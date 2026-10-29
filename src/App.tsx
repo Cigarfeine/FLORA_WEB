@@ -104,8 +104,8 @@ export function AppContent() {
       <Navbar />
       <main className="flex-grow overflow-x-hidden w-full max-w-full">
         <HeroSection />
-        <MarqueeStrip />
         <EditorialManifesto />
+        <MarqueeStrip />
         <ServicesSection />
         <CatalogSection />
         <PlantPotCustomizer />

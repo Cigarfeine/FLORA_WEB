@@ -35,7 +35,7 @@ export const EditorialManifesto: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      className="py-28 sm:py-36 bg-ngen-cream text-ngen-charcoal border-b border-black/10 relative overflow-hidden"
+      className="pt-36 sm:pt-48 pb-28 sm:pb-36 bg-ngen-cream text-ngen-charcoal border-b border-black/10 relative z-10 overflow-hidden"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         

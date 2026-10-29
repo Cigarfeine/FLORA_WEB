@@ -72,24 +72,36 @@ export const Navbar: React.FC = () => {
         <AnnouncementBanner onDismiss={() => setBannerDismissed(true)} />
       )}
 
-      {/* Main Navigation Header Bar (Authentic New Engen layout) */}
-      <header className="w-full max-w-7xl mx-auto px-4 sm:px-8 pt-3 sm:pt-4 transition-all duration-300">
+      {/* Main Navigation Header Bar (Authentic New Engen layout matching screenshots) */}
+      <header className="w-full max-w-7xl mx-auto px-4 sm:px-8 pt-4 sm:pt-6 transition-all duration-300">
         <div className="flex items-center justify-between w-full">
           
-          {/* Left: Brand Identity Logo Pill */}
+          {/* Left: Morphing Brand Identity (Text on canvas at scroll 0 -> Compact dark badge when scrolled) */}
           <a
             href="#"
-            className="pointer-events-auto flex items-center gap-3 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-ngen-green text-ngen-cream border border-white/15 transition-transform duration-300 hover:scale-[1.02] active:scale-95 group shrink-0"
+            className={`pointer-events-auto flex items-center transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] shrink-0 select-none ${
+              scrolled
+                ? 'gap-0 p-1.5 sm:p-2 rounded-2xl bg-ngen-charcoal border border-white/15'
+                : 'gap-3 p-0 bg-transparent border-transparent'
+            }`}
           >
-            <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20 bg-white p-0.5 shrink-0 flex items-center justify-center">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden border border-white/20 bg-white p-0.5 shrink-0 flex items-center justify-center">
               <img
                 src={FLORA_INFO.logo}
                 alt="Flora Pots & Plants Emblem"
                 className="w-full h-full object-cover rounded-full"
               />
             </div>
-            <div className="flex flex-col justify-center pr-1">
-              <span className="font-display font-black text-base sm:text-lg tracking-tighter text-white block leading-none">
+            
+            {/* Logo text: slides and clips away smoothly when scrolled down */}
+            <div
+              className={`flex flex-col justify-center overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] ${
+                scrolled
+                  ? 'max-w-0 opacity-0 pr-0'
+                  : 'max-w-[240px] opacity-100 pr-2'
+              }`}
+            >
+              <span className="font-display font-black text-base sm:text-lg tracking-tighter text-white block leading-none whitespace-nowrap">
                 FLORA
               </span>
               <span className="text-[8px] sm:text-[9px] tracking-widest uppercase font-mono font-bold text-ngen-lime block mt-0.5 leading-none whitespace-nowrap">
@@ -99,22 +111,32 @@ export const Navbar: React.FC = () => {
           </a>
 
           {/* Right Group: Links Capsule + Coral CTA + Bag */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-3 sm:gap-4">
             
-            {/* New Engen Signature Links Capsule */}
-            <nav className="hidden lg:flex items-center gap-6 xl:gap-8 px-6 py-2.5 rounded-full bg-ngen-green text-ngen-cream border border-white/15 pointer-events-auto shrink-0">
+            {/* New Engen Signature Links (Bare on canvas at scroll 0 -> Floating capsule pill when scrolled) */}
+            <nav
+              className={`hidden lg:flex items-center gap-6 xl:gap-8 transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] pointer-events-auto shrink-0 ${
+                scrolled
+                  ? 'px-6 py-2.5 rounded-full bg-ngen-green text-ngen-cream border border-white/15'
+                  : 'px-0 py-0 bg-transparent border-transparent text-white'
+              }`}
+            >
               {navLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
-                  className="text-xs font-bold uppercase tracking-wider text-ngen-cream/80 hover:text-ngen-lime transition-colors duration-200 py-0.5 font-display whitespace-nowrap"
+                  className={`text-xs font-bold uppercase tracking-wider transition-colors duration-200 py-0.5 font-display whitespace-nowrap ${
+                    scrolled
+                      ? 'text-ngen-cream/80 hover:text-ngen-lime'
+                      : 'text-white/85 hover:text-ngen-lime'
+                  }`}
                 >
                   {link.label}
                 </a>
               ))}
             </nav>
 
-            {/* Coral CTA Pill Button */}
+            {/* Coral CTA Pill Button with Electric Lime Hover Fill Curtain */}
             <DualTextButton
               href={`https://wa.me/${FLORA_INFO.whatsappRaw}?text=${encodeURIComponent('Hello Flora Pots & Plants! I would like to consult about plants and planters.')}`}
               target="_blank"
@@ -131,7 +153,9 @@ export const Navbar: React.FC = () => {
             <button
               onClick={() => setIsOpen(true)}
               aria-label="Open Shopping Bag"
-              className="pointer-events-auto relative p-3 rounded-full bg-ngen-green hover:bg-ngen-darkgreen border border-white/15 text-white transition-all duration-200 active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+              className={`pointer-events-auto relative p-3 rounded-full border border-white/15 text-white transition-all duration-300 active:scale-95 cursor-pointer flex items-center justify-center shrink-0 ${
+                scrolled ? 'bg-ngen-green hover:bg-ngen-darkgreen' : 'bg-black/30 hover:bg-black/50'
+              }`}
             >
               <ShoppingBag className="w-4 h-4 text-ngen-cream" />
               {totalItems > 0 && (
@@ -145,7 +169,9 @@ export const Navbar: React.FC = () => {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle Navigation Menu"
-              className="pointer-events-auto lg:hidden p-3 rounded-full bg-ngen-green text-white hover:bg-ngen-darkgreen border border-white/15 transition-colors cursor-pointer shrink-0 flex items-center justify-center"
+              className={`pointer-events-auto lg:hidden p-3 rounded-full border border-white/15 text-white transition-colors cursor-pointer shrink-0 flex items-center justify-center ${
+                scrolled ? 'bg-ngen-green' : 'bg-black/30'
+              }`}
             >
               {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
