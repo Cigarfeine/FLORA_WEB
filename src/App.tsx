@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CartProvider, useCart } from './context/CartContext';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
+import { MarqueeStrip } from './components/MarqueeStrip';
 import { CatalogSection } from './components/CatalogSection';
 import { PlantPotCustomizer } from './components/PlantPotCustomizer';
 import { VideoReelsSection } from './components/VideoReelsSection';
@@ -64,6 +65,7 @@ export function AppContent() {
       <Navbar />
       <main className="flex-grow">
         <HeroSection />
+        <MarqueeStrip />
         <CatalogSection />
         <PlantPotCustomizer />
         <VideoReelsSection />

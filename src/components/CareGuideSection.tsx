@@ -66,12 +66,12 @@ export const CareGuideSection: React.FC = () => {
         
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-botanical-900/10 text-botanical-900 text-xs font-semibold mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-terracotta-600" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ngen-green/10 text-ngen-green font-mono text-xs font-bold uppercase tracking-wider mb-4">
+            <Sparkles className="w-3.5 h-3.5 text-ngen-peach" />
             <span>Flora Botanical Almanac</span>
           </div>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-botanical-950 mb-3">
-            Plant Care & Planter Wisdom
+          <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tighter text-botanical-950 mb-3">
+            PLANT CARE & PLANTER WISDOM
           </h2>
           <p className="text-sand-700 text-sm sm:text-base max-w-lg mx-auto">
             Practical, field-tested guidance to keep your houseplants and designer pots pristine in Kerala homes.

@@ -5,11 +5,43 @@ import { FLORA_INFO } from '../data/catalog';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-botanical-950 text-sand-100 pt-20 pb-12 border-t border-sand-800">
+    <footer className="bg-ngen-darkgreen text-white pt-24 pb-12 border-t border-white/15">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
+        {/* Giant New Engen Call To Action Section */}
+        <div className="pb-20 border-b border-white/15 mb-16">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+            <div className="max-w-2xl">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-ngen-lime block mb-3">
+                Start Your Living Project
+              </span>
+              <h2 className="font-display font-black text-4xl sm:text-6xl lg:text-7xl uppercase tracking-tighter text-white leading-none">
+                LET'S BRING NATURE INTO YOUR SPACE.
+              </h2>
+            </div>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              <a
+                href={`https://wa.me/${FLORA_INFO.whatsappRaw}?text=${encodeURIComponent('Hello Flora! I would like to design/order plants and pots for my space.')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-3 px-8 py-5 rounded-full bg-ngen-peach hover:bg-ngen-peachHover text-botanical-950 font-display font-black text-sm uppercase tracking-wider transition-all duration-200 shadow-xl active:scale-95 group"
+              >
+                <span>Consult on WhatsApp</span>
+                <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
+              <a
+                href={`tel:${FLORA_INFO.phoneRaw}`}
+                className="inline-flex items-center justify-center gap-2 px-8 py-5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-display font-bold text-sm uppercase tracking-wider transition-all duration-200 backdrop-blur-sm active:scale-95"
+              >
+                <Phone className="w-4 h-4 text-ngen-lime" />
+                <span>Call Atelier</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
         {/* Main Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-16 border-b border-sand-800/80">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-16 border-b border-white/15">
           
           {/* Brand Info (5 Cols) */}
           <div className="lg:col-span-5 space-y-4">
@@ -21,9 +53,14 @@ export const Footer: React.FC = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <span className="font-serif text-2xl font-bold tracking-tight text-sand-50">
-                FLORA
-              </span>
+              <div>
+                <span className="font-display font-black text-2xl tracking-tighter text-white block leading-none">
+                  FLORA
+                </span>
+                <span className="text-[10px] tracking-widest uppercase font-mono font-bold text-ngen-lime block mt-0.5">
+                  POTS & PLANTS
+                </span>
+              </div>
             </div>
 
             <p className="text-sand-400 text-xs sm:text-sm leading-relaxed max-w-sm">

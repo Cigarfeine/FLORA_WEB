@@ -48,7 +48,7 @@ const PLANT_OPTIONS: PlantOption[] = [
     id: 'snake',
     name: 'Golden Snake Plant',
     price: 340,
-    image: 'https://images.unsplash.com/photo-1593482892290-f54927ae1bf6?auto=format&fit=crop&w=700&q=80',
+    image: 'https://images.unsplash.com/photo-1509423350716-97f9360b4e09?auto=format&fit=crop&w=700&q=80',
     light: 'Tolerates low light',
     water: 'Every 2-3 weeks',
     vibe: 'Upright striped sword leaves, ultimate air purifier',
@@ -57,7 +57,7 @@ const PLANT_OPTIONS: PlantOption[] = [
     id: 'bonsai',
     name: 'Japanese Juniper Bonsai',
     price: 1290,
-    image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=700&q=80',
+    image: 'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?auto=format&fit=crop&w=700&q=80',
     light: 'Bright morning light',
     water: 'Keep damp with mist',
     vibe: 'Zen art piece with 4-year wire sculptured trunk',
@@ -145,20 +145,24 @@ export const PlantPotCustomizer: React.FC = () => {
   };
 
   return (
-    <section id="studio" className="py-24 bg-gradient-to-b from-sand-100 via-sand-50 to-sand-100 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="studio" className="py-24 bg-ngen-green text-ngen-cream relative overflow-hidden">
+      {/* Background Ambience */}
+      <div className="absolute top-0 right-1/4 w-[40rem] h-[40rem] rounded-full bg-ngen-lightgreen/20 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-10 w-[35rem] h-[35rem] rounded-full bg-botanical-950/60 blur-3xl pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Studio Heading */}
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-botanical-900/10 text-botanical-900 text-xs font-semibold mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-terracotta-600" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ngen-lime/20 border border-ngen-lime/30 text-ngen-lime font-mono text-xs font-bold uppercase tracking-wider mb-4">
+            <Sparkles className="w-3.5 h-3.5 text-ngen-peach" />
             <span>Interactive Matcher Studio</span>
           </div>
-          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-botanical-950 mb-4">
-            Pair Living Flora with Sculptural Pots
+          <h2 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl uppercase tracking-tighter text-white mb-4">
+            PAIR FLORA WITH SCULPTURAL POTS
           </h2>
-          <p className="text-sand-700 text-sm sm:text-base">
-            Visualize your ideal arrangement. Bundle any living plant with a designer planter to unlock an automatic 10% studio pairing discount.
+          <p className="text-sand-300 text-sm sm:text-base">
+            Visualize your ideal botanical arrangement. Bundle any living plant with a designer planter to unlock an automatic 10% studio pairing discount.
           </p>
         </div>
 
@@ -166,16 +170,16 @@ export const PlantPotCustomizer: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
           {/* Controls Column (7 Cols) */}
-          <div className="lg:col-span-7 flex flex-col justify-between space-y-8 bg-white p-6 sm:p-8 rounded-3xl border border-sand-200/80 shadow-sm">
+          <div className="lg:col-span-7 flex flex-col justify-between space-y-8 bg-ngen-darkgreen/70 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/15 shadow-xl text-white">
             
             {/* Step 1: Select Plant */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold uppercase tracking-wider text-sand-500">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-ngen-lime">
                   Step 1 • Choose Your Plant
                 </span>
-                <span className="text-xs font-semibold text-botanical-900">
-                  Selected: {selectedPlant.name}
+                <span className="text-xs font-bold text-sand-200">
+                  Selected: <strong className="text-white">{selectedPlant.name}</strong>
                 </span>
               </div>
 
@@ -188,21 +192,21 @@ export const PlantPotCustomizer: React.FC = () => {
                       onClick={() => setSelectedPlant(plant)}
                       className={`p-2.5 rounded-2xl text-left border transition-all duration-200 flex flex-col items-center ${
                         isSelected
-                          ? 'border-botanical-800 bg-botanical-50/50 shadow-sm'
-                          : 'border-sand-200 hover:border-sand-300 bg-sand-50/50'
+                          ? 'border-ngen-lime bg-white/15 ring-1 ring-ngen-lime/60 shadow-lg'
+                          : 'border-white/10 hover:border-white/25 bg-white/5 hover:bg-white/10'
                       }`}
                     >
-                      <div className="w-full aspect-square rounded-xl overflow-hidden mb-2 bg-sand-200">
+                      <div className="w-full aspect-square rounded-xl overflow-hidden mb-2 bg-black/40">
                         <img
                           src={plant.image}
                           alt={plant.name}
                           className="w-full h-full object-cover"
                         />
                       </div>
-                      <span className="text-xs font-bold text-botanical-950 text-center line-clamp-1">
+                      <span className="text-xs font-bold text-white text-center line-clamp-1">
                         {plant.name}
                       </span>
-                      <span className="text-[11px] font-mono text-sand-600">
+                      <span className="text-[11px] font-mono text-ngen-peach font-bold">
                         ₹{plant.price}
                       </span>
                     </button>
@@ -214,11 +218,11 @@ export const PlantPotCustomizer: React.FC = () => {
             {/* Step 2: Select Pot & Color Finish */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold uppercase tracking-wider text-sand-500">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-ngen-lime">
                   Step 2 • Choose Planter Pot
                 </span>
-                <span className="text-xs font-semibold text-botanical-900">
-                  Selected: {selectedPot.name} ({selectedPot.colorName})
+                <span className="text-xs font-bold text-sand-200">
+                  Selected: <strong className="text-white">{selectedPot.name}</strong>
                 </span>
               </div>
 
@@ -231,27 +235,27 @@ export const PlantPotCustomizer: React.FC = () => {
                       onClick={() => setSelectedPot(pot)}
                       className={`p-2.5 rounded-2xl text-left border transition-all duration-200 flex flex-col items-center ${
                         isSelected
-                          ? 'border-terracotta-600 bg-terracotta-50/50 shadow-sm'
-                          : 'border-sand-200 hover:border-sand-300 bg-sand-50/50'
+                          ? 'border-ngen-lime bg-white/15 ring-1 ring-ngen-lime/60 shadow-lg'
+                          : 'border-white/10 hover:border-white/25 bg-white/5 hover:bg-white/10'
                       }`}
                     >
-                      <div className="w-full aspect-square rounded-xl overflow-hidden mb-2 bg-sand-200 p-2 flex items-center justify-center">
+                      <div className="w-full aspect-square rounded-xl overflow-hidden mb-2 bg-black/40 p-2 flex items-center justify-center">
                         <img
                           src={pot.image}
                           alt={pot.name}
-                          className="max-w-full max-h-full object-contain"
+                          className="max-w-full max-h-full object-contain filter drop-shadow-md"
                         />
                       </div>
                       <div className="flex items-center gap-1.5 mb-0.5">
                         <span
-                          className="w-2.5 h-2.5 rounded-full border border-sand-300"
+                          className="w-2.5 h-2.5 rounded-full border border-white/30"
                           style={{ backgroundColor: pot.colorHex }}
                         />
-                        <span className="text-[11px] font-bold text-sand-900 line-clamp-1">
+                        <span className="text-[11px] font-bold text-white line-clamp-1">
                           {pot.colorName}
                         </span>
                       </div>
-                      <span className="text-[11px] font-mono text-sand-600">
+                      <span className="text-[11px] font-mono text-ngen-peach font-bold">
                         ₹{pot.price}
                       </span>
                     </button>
@@ -261,18 +265,18 @@ export const PlantPotCustomizer: React.FC = () => {
             </div>
 
             {/* Botanical Care Specs for this Pair */}
-            <div className="p-4 rounded-2xl bg-sand-100/70 border border-sand-200/80 flex flex-wrap items-center justify-between gap-4 text-xs">
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs text-sand-300">
               <div className="flex items-center gap-2">
-                <SunMedium className="w-4 h-4 text-amber-600" />
-                <span className="text-sand-800">Light: <strong>{selectedPlant.light}</strong></span>
+                <SunMedium className="w-4 h-4 text-amber-400" />
+                <span>Light: <strong className="text-white">{selectedPlant.light}</strong></span>
               </div>
               <div className="flex items-center gap-2">
-                <Droplets className="w-4 h-4 text-sky-600" />
-                <span className="text-sand-800">Water: <strong>{selectedPlant.water}</strong></span>
+                <Droplets className="w-4 h-4 text-sky-400" />
+                <span>Water: <strong className="text-white">{selectedPlant.water}</strong></span>
               </div>
               <div className="flex items-center gap-2">
-                <Layers className="w-4 h-4 text-botanical-700" />
-                <span className="text-sand-800">Material: <strong>{selectedPot.material}</strong></span>
+                <Layers className="w-4 h-4 text-ngen-lime" />
+                <span>Material: <strong className="text-white">{selectedPot.material}</strong></span>
               </div>
             </div>
 
@@ -280,20 +284,20 @@ export const PlantPotCustomizer: React.FC = () => {
 
           {/* Live Mockup & Bundle Checkout Card (5 Cols) */}
           <div className="lg:col-span-5 flex flex-col">
-            <div className="glass-panel rounded-3xl p-6 sm:p-8 flex-1 flex flex-col justify-between border-2 border-sand-300/80">
+            <div className="bg-ngen-darkgreen/90 backdrop-blur-md rounded-3xl p-6 sm:p-8 flex-1 flex flex-col justify-between border-2 border-white/20 shadow-2xl text-white">
               
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs uppercase font-bold tracking-widest text-terracotta-700">
+                  <span className="text-xs uppercase font-mono font-bold tracking-widest text-sand-300">
                     Live Arrangement Preview
                   </span>
-                  <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">
+                  <span className="px-3 py-1 rounded-full bg-ngen-lime text-botanical-950 font-mono font-black text-xs uppercase tracking-wider">
                     10% Combo Applied
                   </span>
                 </div>
 
                 {/* Combined Graphic Stage */}
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-b from-sand-200/50 to-sand-300/40 p-4 flex items-end justify-center mb-6">
+                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-black/40 border border-white/10 p-4 flex items-end justify-center mb-6">
                   
                   {/* Plant Layer */}
                   <AnimatePresence mode="wait">
@@ -330,24 +334,24 @@ export const PlantPotCustomizer: React.FC = () => {
                 </div>
 
                 {/* Bundle Summary */}
-                <h3 className="font-serif text-xl font-bold text-botanical-950 mb-1">
+                <h3 className="font-display font-bold text-xl text-white mb-1">
                   {selectedPlant.name} in {selectedPot.name}
                 </h3>
-                <p className="text-xs text-sand-700 mb-4">
+                <p className="text-xs text-sand-300 mb-4 leading-relaxed">
                   {selectedPlant.vibe} nestled in {selectedPot.material.toLowerCase()}. Delivered potted and ready to display.
                 </p>
 
                 {/* Pricing Breakdown */}
-                <div className="space-y-1.5 py-3 border-y border-sand-200 text-xs">
-                  <div className="flex justify-between text-sand-700">
+                <div className="space-y-1.5 py-3 border-y border-white/15 text-xs">
+                  <div className="flex justify-between text-sand-300">
                     <span>{selectedPlant.name}</span>
                     <span className="font-mono">₹{selectedPlant.price}</span>
                   </div>
-                  <div className="flex justify-between text-sand-700">
+                  <div className="flex justify-between text-sand-300">
                     <span>{selectedPot.name}</span>
                     <span className="font-mono">₹{selectedPot.price}</span>
                   </div>
-                  <div className="flex justify-between text-emerald-700 font-medium">
+                  <div className="flex justify-between text-ngen-lime font-bold">
                     <span>Studio Combo Discount (10%)</span>
                     <span className="font-mono">-₹{comboDiscount}</span>
                   </div>
@@ -358,22 +362,22 @@ export const PlantPotCustomizer: React.FC = () => {
               <div className="pt-6">
                 <div className="flex items-baseline justify-between mb-4">
                   <div>
-                    <span className="text-xs text-sand-600 block">Total Bundle Price</span>
-                    <span className="font-serif text-2xl font-bold text-botanical-950">
+                    <span className="text-xs text-sand-400 block font-mono">Total Bundle Price</span>
+                    <span className="font-display font-black text-3xl text-white">
                       ₹{finalComboPrice}
                     </span>
                   </div>
-                  <span className="text-xs font-mono text-sand-500 line-through">
+                  <span className="text-sm font-mono text-sand-500 line-through">
                     ₹{rawTotal}
                   </span>
                 </div>
 
                 <button
                   onClick={handleAddComboToCart}
-                  className={`w-full py-3.5 rounded-full font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 shadow-md active:scale-95 ${
+                  className={`w-full py-4 rounded-full font-display font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all duration-200 shadow-xl active:scale-95 ${
                     justAdded
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-botanical-900 hover:bg-botanical-800 text-white'
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-ngen-peach hover:bg-ngen-peachHover text-botanical-950'
                   }`}
                 >
                   {justAdded ? (
@@ -383,7 +387,7 @@ export const PlantPotCustomizer: React.FC = () => {
                     </>
                   ) : (
                     <>
-                      <ShoppingBag className="w-4 h-4 text-terracotta-300" />
+                      <ShoppingBag className="w-4 h-4" />
                       <span>Add Custom Pair to Bag</span>
                     </>
                   )}

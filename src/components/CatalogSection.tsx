@@ -42,22 +42,22 @@ export const CatalogSection: React.FC = () => {
   };
 
   return (
-    <section id="collection" className="py-24 bg-sand-50 relative">
+    <section id="collection" className="py-24 bg-ngen-cream relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-terracotta-600 mb-2">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ngen-green/10 text-ngen-green font-mono text-xs font-bold uppercase tracking-wider mb-4">
+              <Sparkles className="w-3.5 h-3.5 text-ngen-peach" />
               <span>Curated Inventory</span>
             </div>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-botanical-950 tracking-tight">
-              Bespoke Planters & Living Flora
+            <h2 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl uppercase tracking-tighter text-botanical-950 leading-tight">
+              SCULPTURAL POTS & LIVING FLORA
             </h2>
           </div>
-          <p className="text-sand-700 text-sm sm:text-base max-w-md">
-            Directly sourced and nursery-acclimatized in Kerala. Every order is inspected and secured with protective transit packaging.
+          <p className="text-sand-700 text-sm sm:text-base max-w-md font-sans">
+            Directly sourced and nursery-acclimatized in Kerala. Every order is inspected and secured with reinforced shock-proof transit packaging.
           </p>
         </div>
 
@@ -79,7 +79,7 @@ export const CatalogSection: React.FC = () => {
                 {activeCategory === cat.id && (
                   <motion.div
                     layoutId="category-active-pill"
-                    className="absolute inset-0 bg-botanical-900 rounded-full"
+                    className="absolute inset-0 bg-ngen-green rounded-full"
                     transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                   />
                 )}
@@ -107,6 +107,8 @@ export const CatalogSection: React.FC = () => {
             {/* Sort Dropdown */}
             <div className="relative">
               <select
+                id="catalog-sort-select"
+                name="catalogSort"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 aria-label="Sort products by price or default"
@@ -192,7 +194,7 @@ export const CatalogSection: React.FC = () => {
                             {product.dimensions}
                           </span>
                         )}
-                        <h3 className="font-serif text-base font-bold text-botanical-950 mb-2 leading-snug group-hover:text-terracotta-700 transition-colors line-clamp-1">
+                        <h3 className="font-display font-bold text-base text-botanical-950 mb-2 leading-snug group-hover:text-ngen-green transition-colors line-clamp-1">
                           {product.name}
                         </h3>
                         <p className="text-xs text-sand-700 line-clamp-2 leading-relaxed mb-4">
@@ -204,26 +206,26 @@ export const CatalogSection: React.FC = () => {
                       <div className="pt-3 border-t border-sand-100 flex items-center justify-between gap-3">
                         <div>
                           <div className="flex items-baseline gap-2">
-                            <span className="font-serif text-lg font-bold text-botanical-950">
+                            <span className="font-mono text-lg font-black text-botanical-950">
                               ₹{product.price}
                             </span>
                             {product.originalPrice && (
-                              <span className="text-xs text-sand-500 line-through">
+                              <span className="text-xs font-mono text-sand-500 line-through">
                                 ₹{product.originalPrice}
                               </span>
                             )}
                           </div>
-                          <span className="text-[10px] text-emerald-700 font-medium block">
+                          <span className="text-[10px] text-emerald-700 font-semibold block">
                             In Stock • Kerala Dispatch
                           </span>
                         </div>
 
                         <button
                           onClick={() => handleAddToCart(product)}
-                          className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold transition-all duration-200 active:scale-95 ${
+                          className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-display font-black uppercase tracking-wider transition-all duration-200 active:scale-95 shadow-sm ${
                             isJustAdded
                               ? 'bg-emerald-600 text-white'
-                              : 'bg-botanical-900 hover:bg-botanical-800 text-sand-50 shadow-sm'
+                              : 'bg-ngen-peach hover:bg-ngen-peachHover text-botanical-950'
                           }`}
                         >
                           {isJustAdded ? (

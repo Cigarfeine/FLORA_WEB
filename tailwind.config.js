@@ -7,6 +7,16 @@ export default {
   theme: {
     extend: {
       colors: {
+        ngen: {
+          green: '#1e3126',
+          darkgreen: '#15241b',
+          lightgreen: '#284133',
+          cream: '#fbf8f3',
+          linen: '#f4efe6',
+          peach: '#ff8c69',
+          peachHover: '#fa7b55',
+          lime: '#d4e867',
+        },
         botanical: {
           50: '#f2f7f4',
           100: '#e1ede6',
@@ -48,8 +58,10 @@ export default {
         }
       },
       fontFamily: {
+        display: ['"Figtree"', '"Plus Jakarta Sans"', 'sans-serif'],
+        figtree: ['"Figtree"', 'sans-serif'],
         serif: ['"Playfair Display"', 'Georgia', 'serif'],
-        sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', '"Figtree"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       animation: {

@@ -5,11 +5,11 @@ import { TESTIMONIALS, FLORA_INFO } from '../data/catalog';
 
 export const SocialProofSection: React.FC = () => {
   return (
-    <section className="py-24 bg-sand-50 relative border-t border-sand-200">
+    <section className="py-24 bg-ngen-cream relative border-t border-sand-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Metric Badges Banner */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 p-6 sm:p-8 rounded-3xl bg-white border border-sand-200 shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 p-6 sm:p-8 rounded-3xl bg-white border border-sand-200/90 shadow-sm">
           
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 flex-shrink-0">
@@ -17,7 +17,7 @@ export const SocialProofSection: React.FC = () => {
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-serif text-2xl font-bold text-botanical-950">
+                <span className="font-display font-black text-2xl text-botanical-950">
                   {FLORA_INFO.googleRating}
                 </span>
                 <div className="flex text-amber-500">
@@ -26,7 +26,7 @@ export const SocialProofSection: React.FC = () => {
                   ))}
                 </div>
               </div>
-              <span className="text-xs text-sand-600">
+              <span className="text-xs text-sand-600 font-mono">
                 Google Verified • 140+ Customer Ratings
               </span>
             </div>
@@ -37,10 +37,10 @@ export const SocialProofSection: React.FC = () => {
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <span className="font-serif text-2xl font-bold text-botanical-950 block">
+              <span className="font-display font-black text-2xl text-botanical-950 block">
                 100% Safe
               </span>
-              <span className="text-xs text-sand-600">
+              <span className="text-xs text-sand-600 font-mono">
                 Reinforced Shock-Proof Transit Packing
               </span>
             </div>
@@ -51,10 +51,10 @@ export const SocialProofSection: React.FC = () => {
               <InstagramIcon className="w-6 h-6" />
             </div>
             <div>
-              <span className="font-serif text-2xl font-bold text-botanical-950 block">
+              <span className="font-display font-black text-2xl text-botanical-950 block">
                 @flora__pots
               </span>
-              <span className="text-xs text-sand-600">
+              <span className="text-xs text-sand-600 font-mono">
                 Active Kerala Plant-Loving Community
               </span>
             </div>
@@ -65,11 +65,11 @@ export const SocialProofSection: React.FC = () => {
         {/* Testimonials Grid */}
         <div className="mb-12">
           <div className="text-center max-w-xl mx-auto mb-12">
-            <span className="text-xs font-bold uppercase tracking-wider text-terracotta-600 block mb-2">
+            <span className="inline-block px-3.5 py-1.5 rounded-full bg-ngen-green/10 text-ngen-green font-mono text-xs font-bold uppercase tracking-wider mb-3">
               Verified Patron Stories
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-botanical-950">
-              Loved by Plant Parents Across Kerala
+            <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tighter text-botanical-950">
+              LOVED ACROSS KERALA HOMES
             </h2>
           </div>
 
