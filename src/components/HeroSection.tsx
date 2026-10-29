@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Volume2, VolumeX, Play, Pause, ShoppingBag, CheckCircle2 } from 'lucide-react';
-import { FLORA_INFO, PRODUCTS, VIDEO_REELS } from '../data/catalog';
+import { PRODUCTS, VIDEO_REELS } from '../data/catalog';
 import { useCart } from '../context/CartContext';
 import { DualTextButton } from './ui/DualTextButton';
+import { SplitText } from './ui/SplitText';
+import { AnimatedCounter } from './ui/AnimatedCounter';
 
 export const HeroSection: React.FC = () => {
   const { addItem } = useCart();
@@ -98,22 +100,18 @@ export const HeroSection: React.FC = () => {
               </div>
             </motion.div>
 
-            {/* Massive Bold Headline (New Engen style) */}
-            <motion.h1
-              initial={{ opacity: 0, y: 25 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1, ease: [0.19, 1, 0.22, 1] }}
-              className="font-display font-black text-5xl sm:text-7xl lg:text-8xl tracking-[-0.03em] leading-[0.9] text-white uppercase mb-8"
-            >
-              NATURE IS<br />
-              OUR CANVAS.
-            </motion.h1>
+            {/* Massive Bold Headline with SplitText Bottom-Origin Character Unroll (New Engen style) */}
+            <h1 className="font-display font-black text-5xl sm:text-7xl lg:text-8xl tracking-[-0.03em] leading-[0.9] text-white uppercase mb-8 max-w-5xl">
+              <SplitText delay={0.1}>NATURE IS</SplitText>
+              <br />
+              <SplitText delay={0.3}>OUR CANVAS.</SplitText>
+            </h1>
 
             {/* Narrative Subtitle */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: [0.19, 1, 0.22, 1] }}
+              transition={{ duration: 0.7, delay: 0.25, ease: [0.19, 1, 0.22, 1] }}
               className="text-base sm:text-lg text-ngen-cream/80 leading-relaxed max-w-xl mb-10 font-sans"
             >
               Flora is Kerala's premier creative-led horticulture & planter studio. We curate sculptural marble & ceramic vessels, living tropical exotics, and zero-maintenance silk botanicals for serene, architectural spaces.
@@ -123,7 +121,7 @@ export const HeroSection: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3, ease: [0.19, 1, 0.22, 1] }}
+              transition={{ duration: 0.7, delay: 0.35, ease: [0.19, 1, 0.22, 1] }}
               className="flex flex-wrap items-center gap-4 mb-12"
             >
               <DualTextButton
@@ -144,28 +142,28 @@ export const HeroSection: React.FC = () => {
               </DualTextButton>
             </motion.div>
 
-            {/* Trust Highlights - Flat Hairline Grid */}
+            {/* Trust Highlights - Flat Hairline Grid with Animated Numbers */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={{ duration: 0.8, delay: 0.45 }}
               className="grid grid-cols-3 gap-6 pt-6 border-t border-white/15 w-full max-w-lg font-mono text-xs"
             >
               <div>
                 <span className="font-display font-black text-2xl text-white block leading-tight">
-                  {FLORA_INFO.googleRating}★
+                  <AnimatedCounter to={4.7} decimals={1} suffix="★" />
                 </span>
                 <span className="text-ngen-cream/60 uppercase text-[11px] tracking-wider">Google Verified</span>
               </div>
               <div>
                 <span className="font-display font-black text-2xl text-white block leading-tight">
-                  100%
+                  <AnimatedCounter to={100} decimals={0} suffix="%" />
                 </span>
                 <span className="text-ngen-cream/60 uppercase text-[11px] tracking-wider">Root Health</span>
               </div>
               <div>
                 <span className="font-display font-black text-2xl text-white block leading-tight">
-                  24-48h
+                  <AnimatedCounter to={24} decimals={0} suffix="-48h" />
                 </span>
                 <span className="text-ngen-cream/60 uppercase text-[11px] tracking-wider">Kerala Delivery</span>
               </div>

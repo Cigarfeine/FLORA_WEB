@@ -24,19 +24,37 @@ export const AnnouncementBanner: React.FC<{ onDismiss?: () => void }> = ({ onDis
 export const Navbar: React.FC = () => {
   const { totalItems, setIsOpen } = useCart();
   const [scrolled, setScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [bannerDismissed, setBannerDismissed] = useState(false);
 
   useEffect(() => {
+    let lastY = window.scrollY;
+
     const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+      const currentY = window.scrollY;
+      setScrolled(currentY > 40);
+
+      // Directional auto-hide on downscroll, show on upscroll (New Engen pattern)
+      if (currentY > 160) {
+        if (currentY > lastY + 6) {
+          setIsVisible(false); // scrolling down
+        } else if (currentY < lastY - 6) {
+          setIsVisible(true); // scrolling up
+        }
+      } else {
+        setIsVisible(true);
+      }
+      lastY = currentY;
     };
-    window.addEventListener('scroll', handleScroll);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navLinks = [
     { label: 'Work & Catalog', href: '#collection' },
+    { label: 'Services', href: '#services' },
     { label: 'Matcher Studio', href: '#studio' },
     { label: 'Showroom Reels', href: '#reels' },
     { label: 'Botanical Care', href: '#care' },
@@ -44,14 +62,18 @@ export const Navbar: React.FC = () => {
   ];
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-40 pointer-events-none transition-all duration-300">
+    <div
+      className={`fixed top-0 left-0 right-0 z-40 pointer-events-none transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] ${
+        isVisible ? 'translate-y-0' : '-translate-y-full -translate-y-4'
+      }`}
+    >
       {/* Top Announcement Banner (Visible when un-scrolled and not dismissed) */}
       {!scrolled && !bannerDismissed && (
         <AnnouncementBanner onDismiss={() => setBannerDismissed(true)} />
       )}
 
       {/* Main Navigation Header Bar (Authentic New Engen layout) */}
-      <header className={`w-full max-w-7xl mx-auto px-4 sm:px-8 transition-all duration-300 ${scrolled ? 'pt-3 sm:pt-4' : 'pt-3 sm:pt-4'}`}>
+      <header className="w-full max-w-7xl mx-auto px-4 sm:px-8 pt-3 sm:pt-4 transition-all duration-300">
         <div className="flex items-center justify-between w-full">
           
           {/* Left: Brand Identity Logo Pill */}

@@ -3,6 +3,7 @@ import { Star, ShieldCheck, MapPin } from 'lucide-react';
 import { InstagramIcon } from './icons/InstagramIcon';
 import { TESTIMONIALS, FLORA_INFO } from '../data/catalog';
 import { DualTextButton } from './ui/DualTextButton';
+import { AnimatedCounter } from './ui/AnimatedCounter';
 
 export const SocialProofSection: React.FC = () => {
   return (
@@ -19,7 +20,7 @@ export const SocialProofSection: React.FC = () => {
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="font-display font-black text-2xl text-ngen-charcoal">
-                  {FLORA_INFO.googleRating}
+                  <AnimatedCounter to={FLORA_INFO.googleRating} decimals={1} />
                 </span>
                 <div className="flex text-amber-500">
                   {[...Array(5)].map((_, i) => (
@@ -39,7 +40,7 @@ export const SocialProofSection: React.FC = () => {
             </div>
             <div>
               <span className="font-display font-black text-2xl text-ngen-charcoal block">
-                100% Safe
+                <AnimatedCounter to={100} suffix="%" /> Safe
               </span>
               <span className="text-xs text-ngen-charcoal/60 font-mono uppercase tracking-wider block mt-0.5">
                 Shock-Proof Transit Packing
@@ -67,7 +68,7 @@ export const SocialProofSection: React.FC = () => {
         <div className="mb-12">
           <div className="text-center max-w-xl mx-auto mb-12">
             <span className="inline-block px-3.5 py-1.5 rounded-full bg-ngen-green text-ngen-cream font-mono text-[11px] font-bold uppercase tracking-wider mb-3 border border-ngen-green">
-              Verified Patron Stories
+              04 / VERIFIED PATRON STORIES
             </span>
             <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-[-0.03em] text-ngen-charcoal leading-[0.95]">
               LOVED ACROSS<br />KERALA HOMES
@@ -78,7 +79,7 @@ export const SocialProofSection: React.FC = () => {
             {TESTIMONIALS.map((t) => (
               <div
                 key={t.id}
-                className="bg-white rounded-2xl p-6 border border-ngen-charcoal/10 flex flex-col justify-between hover:border-ngen-charcoal/30 transition-colors duration-200"
+                className="bg-white rounded-2xl p-6 border border-ngen-charcoal/10 flex flex-col justify-between hover:border-ngen-charcoal/30 transition-colors duration-200 group"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
@@ -99,7 +100,7 @@ export const SocialProofSection: React.FC = () => {
 
                 <div className="pt-4 border-t border-ngen-charcoal/10 flex items-center justify-between">
                   <div>
-                    <h4 className="font-display font-black text-sm uppercase text-ngen-charcoal">
+                    <h4 className="font-display font-black text-sm uppercase text-ngen-charcoal group-hover:text-ngen-green transition-colors">
                       {t.author}
                     </h4>
                     <div className="flex items-center gap-1 text-[11px] text-ngen-charcoal/60 font-mono">
