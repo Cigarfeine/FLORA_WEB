@@ -8,14 +8,17 @@ export default {
     extend: {
       colors: {
         ngen: {
-          green: '#1e3126',
-          darkgreen: '#15241b',
-          lightgreen: '#284133',
-          cream: '#fbf8f3',
-          linen: '#f4efe6',
-          peach: '#ff8c69',
-          peachHover: '#fa7b55',
-          lime: '#d4e867',
+          green: '#334238',
+          darkgreen: '#26322a',
+          lightgreen: '#3f5346',
+          cream: '#FAF2E8',
+          linen: '#FAF2E8',
+          fern: '#618C70',
+          peach: '#FF9C94',
+          peachHover: '#f68880',
+          coral: '#FF9C94',
+          lime: '#CCE561',
+          charcoal: '#242424',
         },
         botanical: {
           50: '#f2f7f4',

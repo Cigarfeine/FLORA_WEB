@@ -18,7 +18,7 @@ export const MarqueeStrip: React.FC = () => {
   ];
 
   return (
-    <div className="py-4 bg-ngen-lime text-botanical-950 overflow-hidden select-none border-y-2 border-botanical-950 font-display font-black text-xs sm:text-sm tracking-wider uppercase">
+    <div className="py-3.5 bg-ngen-lime text-ngen-charcoal overflow-hidden select-none border-y border-ngen-charcoal/20 font-display font-black text-xs sm:text-sm tracking-wider uppercase">
       <div className="flex w-max">
         <motion.div
           animate={{ x: ['0%', '-50%'] }}
@@ -28,7 +28,7 @@ export const MarqueeStrip: React.FC = () => {
           {[...marqueeItems, ...marqueeItems, ...marqueeItems, ...marqueeItems].map((item, idx) => (
             <span
               key={idx}
-              className={item === '•' ? 'text-botanical-950/40' : 'text-botanical-950'}
+              className={item === '•' ? 'text-ngen-charcoal/40' : 'text-ngen-charcoal'}
             >
               {item}
             </span>

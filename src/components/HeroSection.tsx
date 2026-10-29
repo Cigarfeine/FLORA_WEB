@@ -1,8 +1,9 @@
-import React, { useState, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Volume2, VolumeX, Play, Pause, ShoppingBag, ArrowRight, CheckCircle2 } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { Volume2, VolumeX, Play, Pause, ShoppingBag, CheckCircle2 } from 'lucide-react';
 import { FLORA_INFO, PRODUCTS, VIDEO_REELS } from '../data/catalog';
 import { useCart } from '../context/CartContext';
+import { DualTextButton } from './ui/DualTextButton';
 
 export const HeroSection: React.FC = () => {
   const { addItem } = useCart();
@@ -13,14 +14,25 @@ export const HeroSection: React.FC = () => {
   const [isMuted, setIsMuted] = useState(true);
   const [activeCardIndex, setActiveCardIndex] = useState(1); // middle card active
 
+  // Cycling kinetic words for New Engen style animated pill
+  const spaces = ['LIVING ROOMS', 'BALCONIES', 'BOUTIQUE CAFÉS', 'MINIMALIST HOMES'];
+  const [spaceIndex, setSpaceIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSpaceIndex((prev) => (prev + 1) % spaces.length);
+    }, 2800);
+    return () => clearInterval(timer);
+  }, [spaces.length]);
+
   // Scroll parallax for hero elements
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   });
 
-  const textY = useTransform(scrollYProgress, [0, 1], ['0%', '25%']);
-  const deckRotate = useTransform(scrollYProgress, [0, 1], [0, 10]);
+  const textY = useTransform(scrollYProgress, [0, 1], ['0%', '15%']);
+  const deckRotate = useTransform(scrollYProgress, [0, 1], [0, 6]);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -40,17 +52,13 @@ export const HeroSection: React.FC = () => {
     }
   };
 
-  const featuredProduct = PRODUCTS.find(p => p.id === 'jaguar-cool-pot') || PRODUCTS[0];
+  const featuredProduct = PRODUCTS.find((p) => p.id === 'jaguar-cool-pot') || PRODUCTS[0];
 
   return (
     <section
       ref={containerRef}
-      className="relative min-h-[100dvh] pt-36 sm:pt-40 pb-20 flex items-center bg-ngen-green text-ngen-cream overflow-hidden"
+      className="relative min-h-[100dvh] pt-36 sm:pt-40 pb-20 flex items-center bg-ngen-green text-ngen-cream overflow-hidden border-b border-black/10"
     >
-      {/* Background Ambience & Lighting */}
-      <div className="absolute top-0 right-1/4 w-[45rem] h-[45rem] rounded-full bg-ngen-lightgreen/30 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-10 w-[35rem] h-[35rem] rounded-full bg-botanical-950/60 blur-3xl pointer-events-none" />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
         
         {/* Asymmetric 50/50 Split */}
@@ -62,28 +70,40 @@ export const HeroSection: React.FC = () => {
             className="lg:col-span-7 flex flex-col items-start text-left"
           >
             
-            {/* Live Studio Status Pill */}
+            {/* New Engen Style Dynamic Rotating Pill Badge */}
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs font-mono font-bold uppercase tracking-wider text-sand-100 mb-6 backdrop-blur-sm"
+              transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-[11px] font-mono uppercase tracking-wider text-ngen-cream mb-6 select-none"
             >
               <span className="flex h-2 w-2 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-ngen-lime opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-ngen-lime"></span>
               </span>
-              <span>Boutique Studio in Nellikuzhi</span>
-              <span className="text-white/40">•</span>
-              <span className="text-ngen-lime font-bold">Open Today</span>
+              <span>SCULPTING NATURE FOR</span>
+              <div className="h-5 overflow-hidden inline-flex items-center text-ngen-lime font-bold">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={spaces[spaceIndex]}
+                    initial={{ y: 14, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -14, opacity: 0 }}
+                    transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
+                    className="inline-block"
+                  >
+                    [{spaces[spaceIndex]}]
+                  </motion.span>
+                </AnimatePresence>
+              </div>
             </motion.div>
 
             {/* Massive Bold Headline (New Engen style) */}
             <motion.h1
               initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="font-display font-black text-5xl sm:text-7xl lg:text-8xl tracking-tighter leading-[0.92] text-white uppercase mb-8"
+              transition={{ duration: 0.7, delay: 0.1, ease: [0.19, 1, 0.22, 1] }}
+              className="font-display font-black text-5xl sm:text-7xl lg:text-8xl tracking-[-0.03em] leading-[0.9] text-white uppercase mb-8"
             >
               NATURE IS<br />
               OUR CANVAS.
@@ -93,36 +113,38 @@ export const HeroSection: React.FC = () => {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="text-base sm:text-lg text-sand-200/90 leading-relaxed max-w-xl mb-10 font-sans"
+              transition={{ duration: 0.7, delay: 0.2, ease: [0.19, 1, 0.22, 1] }}
+              className="text-base sm:text-lg text-ngen-cream/80 leading-relaxed max-w-xl mb-10 font-sans"
             >
-              Flora is Kerala's premier creative-led horticulture & planter destination. We craft sculptural marble & ceramic pots, living tropical flora, and zero-maintenance silk botanicals for serene, design-forward homes.
+              Flora is Kerala's premier creative-led horticulture & planter studio. We curate sculptural marble & ceramic vessels, living tropical exotics, and zero-maintenance silk botanicals for serene, architectural spaces.
             </motion.p>
 
-            {/* Action Buttons: New Engen Peach Pill + Frosted White Pill */}
+            {/* Action Buttons: DualTextButton components */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.7, delay: 0.3, ease: [0.19, 1, 0.22, 1] }}
               className="flex flex-wrap items-center gap-4 mb-12"
             >
-              <a
+              <DualTextButton
                 href="#collection"
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-ngen-peach hover:bg-ngen-peachHover text-botanical-950 font-display font-extrabold text-sm uppercase tracking-wider transition-all duration-200 shadow-xl hover:shadow-2xl active:scale-95 group"
+                variant="peach"
+                size="lg"
+                showArrow
               >
-                <span>Explore Collection</span>
-                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-              </a>
+                Explore Collection
+              </DualTextButton>
 
-              <a
+              <DualTextButton
                 href="#studio"
-                className="inline-flex items-center gap-2 px-7 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-display font-bold text-sm uppercase tracking-wider transition-all duration-200 backdrop-blur-sm active:scale-95"
+                variant="outline-light"
+                size="lg"
               >
-                <span>Plant & Pot Studio</span>
-              </a>
+                Plant & Pot Studio
+              </DualTextButton>
             </motion.div>
 
-            {/* Trust Highlights */}
+            {/* Trust Highlights - Flat Hairline Grid */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -133,19 +155,19 @@ export const HeroSection: React.FC = () => {
                 <span className="font-display font-black text-2xl text-white block leading-tight">
                   {FLORA_INFO.googleRating}★
                 </span>
-                <span className="text-sand-400">Google Verified</span>
+                <span className="text-ngen-cream/60 uppercase text-[11px] tracking-wider">Google Verified</span>
               </div>
               <div>
                 <span className="font-display font-black text-2xl text-white block leading-tight">
                   100%
                 </span>
-                <span className="text-sand-400">Root Health Guarantee</span>
+                <span className="text-ngen-cream/60 uppercase text-[11px] tracking-wider">Root Health</span>
               </div>
               <div>
                 <span className="font-display font-black text-2xl text-white block leading-tight">
                   24-48h
                 </span>
-                <span className="text-sand-400">Kerala Fast Delivery</span>
+                <span className="text-ngen-cream/60 uppercase text-[11px] tracking-wider">Kerala Delivery</span>
               </div>
             </motion.div>
 
@@ -159,11 +181,11 @@ export const HeroSection: React.FC = () => {
             >
               {/* Card 0: Left Back Card (Reel 2) */}
               <motion.div
-                initial={{ opacity: 0, x: -30, rotate: -12 }}
-                animate={{ opacity: 0.75, x: -35, rotate: -8 }}
-                whileHover={{ opacity: 1, x: -50, rotate: -12, scale: 1.02, zIndex: 30 }}
+                initial={{ opacity: 0, x: -30, rotate: -10 }}
+                animate={{ opacity: 0.8, x: -35, rotate: -7 }}
+                whileHover={{ opacity: 1, x: -48, rotate: -10, scale: 1.02, zIndex: 30 }}
                 onClick={() => setActiveCardIndex(0)}
-                className="absolute w-[260px] sm:w-[280px] aspect-[9/16] rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl bg-black cursor-pointer transition-all duration-300 z-10 -translate-y-4"
+                className="absolute w-[260px] sm:w-[280px] aspect-[9/16] rounded-3xl overflow-hidden border border-white/20 bg-black cursor-pointer transition-all duration-300 z-10 -translate-y-4 select-none"
               >
                 <img
                   src={VIDEO_REELS[1].posterUrl}
@@ -183,11 +205,11 @@ export const HeroSection: React.FC = () => {
 
               {/* Card 2: Right Back Card (Reel 3) */}
               <motion.div
-                initial={{ opacity: 0, x: 30, rotate: 12 }}
-                animate={{ opacity: 0.75, x: 35, rotate: 8 }}
-                whileHover={{ opacity: 1, x: 50, rotate: 12, scale: 1.02, zIndex: 30 }}
+                initial={{ opacity: 0, x: 30, rotate: 10 }}
+                animate={{ opacity: 0.8, x: 35, rotate: 7 }}
+                whileHover={{ opacity: 1, x: 48, rotate: 10, scale: 1.02, zIndex: 30 }}
                 onClick={() => setActiveCardIndex(2)}
-                className="absolute w-[260px] sm:w-[280px] aspect-[9/16] rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl bg-black cursor-pointer transition-all duration-300 z-10 translate-y-4"
+                className="absolute w-[260px] sm:w-[280px] aspect-[9/16] rounded-3xl overflow-hidden border border-white/20 bg-black cursor-pointer transition-all duration-300 z-10 translate-y-4 select-none"
               >
                 <img
                   src={VIDEO_REELS[2].posterUrl}
@@ -207,9 +229,9 @@ export const HeroSection: React.FC = () => {
 
               {/* Card 1: Center Front Active Reel Card (Playing Live Video) */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                className="relative w-[280px] sm:w-[310px] aspect-[9/16] rounded-3xl overflow-hidden border-2 border-white/40 shadow-2xl bg-black z-20 group"
+                className="relative w-[280px] sm:w-[310px] aspect-[9/16] rounded-3xl overflow-hidden border border-white/30 bg-black z-20 group"
               >
                 <video
                   ref={videoRef}
@@ -227,31 +249,31 @@ export const HeroSection: React.FC = () => {
 
                 {/* Top Overlay Controls */}
                 <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-30">
-                  <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-[11px] font-mono font-bold text-white border border-white/20">
-                    Live Showroom Reel
+                  <span className="px-3 py-1 rounded-full bg-black/70 text-[10px] font-mono uppercase tracking-wider font-bold text-white border border-white/15">
+                    Showroom Reel
                   </span>
 
                   <div className="flex items-center gap-2">
                     <button
                       onClick={toggleSound}
                       aria-label={isMuted ? 'Unmute video' : 'Mute video'}
-                      className="p-2 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all active:scale-90"
+                      className="p-2 rounded-full bg-black/70 border border-white/20 text-white hover:bg-white/20 transition-all active:scale-90"
                     >
-                      {isMuted ? <VolumeX className="w-3.5 h-3.5 text-sand-300" /> : <Volume2 className="w-3.5 h-3.5 text-ngen-lime" />}
+                      {isMuted ? <VolumeX className="w-3.5 h-3.5 text-ngen-cream/60" /> : <Volume2 className="w-3.5 h-3.5 text-ngen-lime" />}
                     </button>
                     <button
                       onClick={togglePlay}
                       aria-label={isPlaying ? 'Pause video' : 'Play video'}
-                      className="p-2 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all active:scale-90"
+                      className="p-2 rounded-full bg-black/70 border border-white/20 text-white hover:bg-white/20 transition-all active:scale-90"
                     >
                       {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-white" />}
                     </button>
                   </div>
                 </div>
 
-                {/* Bottom Featured Store Item Card */}
+                {/* Bottom Featured Store Item Card - Flat Hairline Box */}
                 <div className="absolute bottom-4 left-4 right-4 z-30">
-                  <div className="bg-botanical-950/80 backdrop-blur-md rounded-2xl p-3.5 border border-white/15 text-white shadow-lg">
+                  <div className="bg-ngen-green/95 rounded-2xl p-3.5 border border-white/20 text-white">
                     <div className="flex items-center justify-between gap-2 mb-1">
                       <span className="text-[10px] uppercase font-mono font-bold text-ngen-lime">
                         Featured in Showroom
@@ -273,7 +295,7 @@ export const HeroSection: React.FC = () => {
 
                       <button
                         onClick={() => addItem(featuredProduct, 'Grey Marble')}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-ngen-peach hover:bg-ngen-peachHover text-botanical-950 transition-all active:scale-95 shadow"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-ngen-peach hover:bg-ngen-peachHover text-ngen-charcoal transition-all active:scale-95"
                       >
                         <ShoppingBag className="w-3 h-3" />
                         <span>Quick Add</span>

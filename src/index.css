@@ -5,42 +5,58 @@
 @layer base {
   html {
     color-scheme: light;
-    scroll-behavior: smooth;
   }
 
   body {
     overflow-x: hidden;
+    background-color: #FAF2E8;
+    color: #242424;
   }
 }
 
-/* Glassmorphism Refraction & Shimmer */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 10px 30px -10px rgba(15, 41, 30, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+/* Lenis Smooth Scroll Recommended Rules */
+html.lenis, html.lenis body {
+  height: auto;
 }
 
-.glass-panel-dark {
-  background: rgba(11, 22, 17, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
 }
 
-/* Custom Botanical Scrollbar */
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Flat Architectural Minimal Cards (Zero Drop Shadow, Crisp 1px Hairlines) */
+.flat-card-light {
+  background: #FAF2E8;
+  border: 1px solid rgba(36, 36, 36, 0.1);
+}
+
+.flat-card-dark {
+  background: #334238;
+  border: 1px solid rgba(250, 242, 232, 0.12);
+}
+
+/* Custom Minimal Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f4efe6;
+  background: #FAF2E8;
 }
 ::-webkit-scrollbar-thumb {
-  background: #c5dcd0;
-  border-radius: 4px;
+  background: #618C70;
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ec2b1;
+  background: #334238;
 }

@@ -17,7 +17,7 @@ export const CareGuideSection: React.FC = () => {
     {
       id: 'watering',
       question: 'Watering Guidelines for Kerala Tropical Climates',
-      icon: <Droplets className="w-5 h-5 text-sky-700" />,
+      icon: <Droplets className="w-4 h-4 text-sky-600" />,
       answer: 'Kerala experiences heavy monsoon humidity followed by intense sunny spells. Never water indoor plants on a rigid calendar schedule. Instead, test the soil with your index finger.',
       bulletPoints: [
         'Insert your finger 2 inches into the soil. If it feels cool and damp, delay watering.',
@@ -28,7 +28,7 @@ export const CareGuideSection: React.FC = () => {
     {
       id: 'sunlight',
       question: 'Mastering Light: Direct Sun vs Filtered Bright Light',
-      icon: <Sun className="w-5 h-5 text-amber-600" />,
+      icon: <Sun className="w-4 h-4 text-amber-500" />,
       answer: 'Most indoor foliage plants (Monstera, Fiddle Leaf, Peace Lily) originate in tropical forest canopies and despise harsh direct midday sun which scorches leaves.',
       bulletPoints: [
         'Place plants 3 to 6 feet away from east-facing or south-facing windows with sheer curtains.',
@@ -39,7 +39,7 @@ export const CareGuideSection: React.FC = () => {
     {
       id: 'potting',
       question: 'Choosing the Right Planter: Ceramic, Fiber or Polymer?',
-      icon: <Wind className="w-5 h-5 text-terracotta-600" />,
+      icon: <Wind className="w-4 h-4 text-ngen-peach" />,
       answer: 'Every pot material in our store is selected for specific indoor lifestyle needs and aesthetic durability.',
       bulletPoints: [
         'Natural Terracotta: Porous walls allow maximum root breathing, ideal for succulents and overwaterers.',
@@ -50,7 +50,7 @@ export const CareGuideSection: React.FC = () => {
     {
       id: 'cleaning',
       question: 'Dust Prevention & Natural Leaf Polish Routine',
-      icon: <Sprout className="w-5 h-5 text-emerald-700" />,
+      icon: <Sprout className="w-4 h-4 text-emerald-600" />,
       answer: 'Dust accumulation blocks stomata and impairs photosynthesis. Keeping broad leaves clean ensures vibrant green shine and pest prevention.',
       bulletPoints: [
         'Wipe leaves monthly using a soft microfiber cloth dampened with plain lukewarm water.',
@@ -61,49 +61,49 @@ export const CareGuideSection: React.FC = () => {
   ];
 
   return (
-    <section id="care" className="py-24 bg-sand-100/60 relative">
+    <section id="care" className="py-24 bg-ngen-cream text-ngen-charcoal relative border-b border-ngen-charcoal/10">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ngen-green/10 text-ngen-green font-mono text-xs font-bold uppercase tracking-wider mb-4">
-            <Sparkles className="w-3.5 h-3.5 text-ngen-peach" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ngen-green text-ngen-cream font-mono text-[11px] font-bold uppercase tracking-wider mb-4 border border-ngen-green">
+            <Sparkles className="w-3.5 h-3.5 text-ngen-lime" />
             <span>Flora Botanical Almanac</span>
           </div>
-          <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-tighter text-botanical-950 mb-3">
-            PLANT CARE & PLANTER WISDOM
+          <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-[-0.03em] text-ngen-charcoal leading-[0.95] mb-3">
+            PLANT CARE &<br />PLANTER WISDOM
           </h2>
-          <p className="text-sand-700 text-sm sm:text-base max-w-lg mx-auto">
+          <p className="text-ngen-charcoal/70 text-sm sm:text-base max-w-lg mx-auto font-sans">
             Practical, field-tested guidance to keep your houseplants and designer pots pristine in Kerala homes.
           </p>
         </div>
 
-        {/* Accordion Deck */}
-        <div className="space-y-4">
+        {/* Accordion Deck - Flat Architectural Cards */}
+        <div className="space-y-3">
           {guideItems.map((item) => {
             const isOpen = openId === item.id;
             return (
               <div
                 key={item.id}
-                className="bg-white rounded-2xl border border-sand-200/90 overflow-hidden shadow-sm transition-all duration-200 hover:border-sand-300"
+                className="bg-white rounded-2xl border border-ngen-charcoal/10 overflow-hidden transition-colors hover:border-ngen-charcoal/30"
               >
                 <button
                   onClick={() => setOpenId(isOpen ? '' : item.id)}
                   aria-expanded={isOpen}
-                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4"
+                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="p-2.5 rounded-xl bg-sand-100/80 border border-sand-200 flex-shrink-0">
+                    <div className="p-2 rounded-xl bg-ngen-cream border border-ngen-charcoal/10 flex-shrink-0">
                       {item.icon}
                     </div>
-                    <span className="font-serif text-base sm:text-lg font-bold text-botanical-950">
+                    <span className="font-display font-black text-sm sm:text-base uppercase tracking-tight text-ngen-charcoal">
                       {item.question}
                     </span>
                   </div>
                   <motion.div
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
-                    className="p-1 text-sand-500"
+                    className="p-1 text-ngen-charcoal/60"
                   >
                     <ChevronDown className="w-5 h-5" />
                   </motion.div>
@@ -115,14 +115,14 @@ export const CareGuideSection: React.FC = () => {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                      transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
                     >
-                      <div className="px-5 pb-6 sm:px-6 pt-0 border-t border-sand-100 text-sm text-sand-800 leading-relaxed">
-                        <p className="mt-4 mb-4 text-sand-800 font-medium">{item.answer}</p>
-                        <ul className="space-y-2.5 pl-2">
+                      <div className="px-5 pb-6 sm:px-6 pt-0 border-t border-ngen-charcoal/10 text-sm text-ngen-charcoal/80 leading-relaxed font-sans">
+                        <p className="mt-4 mb-4 text-ngen-charcoal font-medium">{item.answer}</p>
+                        <ul className="space-y-2.5 pl-1">
                           {item.bulletPoints.map((bp, i) => (
-                            <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-sand-700">
-                              <span className="w-1.5 h-1.5 rounded-full bg-terracotta-500 mt-2 flex-shrink-0" />
+                            <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-ngen-charcoal/70">
+                              <span className="w-1.5 h-1.5 rounded-full bg-ngen-green mt-2 flex-shrink-0" />
                               <span>{bp}</span>
                             </li>
                           ))}
