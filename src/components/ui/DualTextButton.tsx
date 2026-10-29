@@ -48,15 +48,15 @@ export const DualTextButton: React.FC<DualTextButtonProps> = ({
 
   const content = (
     <>
-      <span className="relative overflow-hidden inline-flex flex-col h-[1.3em] leading-[1.3em]">
+      <span className="relative overflow-hidden inline-flex flex-col h-[1.3em] leading-[1.3em] whitespace-nowrap">
         {/* Row 1: Active visible text sliding up on hover */}
-        <span className="inline-block transition-transform duration-300 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
+        <span className="inline-block whitespace-nowrap transition-transform duration-300 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
           {children}
         </span>
         {/* Row 2: Secondary text sliding up from underneath on hover */}
         <span
           aria-hidden="true"
-          className="absolute top-full left-0 inline-block transition-transform duration-300 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full"
+          className="absolute top-full left-0 inline-block whitespace-nowrap transition-transform duration-300 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full"
         >
           {children}
         </span>
@@ -68,7 +68,7 @@ export const DualTextButton: React.FC<DualTextButtonProps> = ({
     </>
   );
 
-  const baseClasses = `group relative inline-flex items-center justify-center rounded-full uppercase transition-all duration-300 select-none cursor-pointer active:scale-95 ${variantStyles[variant]} ${sizeStyles[size]} ${className}`;
+  const baseClasses = `group relative inline-flex items-center justify-center rounded-full uppercase transition-all duration-300 select-none cursor-pointer whitespace-nowrap shrink-0 active:scale-95 ${variantStyles[variant]} ${sizeStyles[size]} ${className}`;
 
   if (href) {
     return (
