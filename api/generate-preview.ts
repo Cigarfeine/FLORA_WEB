@@ -25,7 +25,7 @@ type ApiResponse = {
   end(): void;
 };
 
-const MAX_DATA_URL_LENGTH = 4_000_000;
+const MAX_DATA_URL_LENGTH = 3_500_000;
 const ALLOWED_IMAGE_HOSTS = new Set(['images.unsplash.com', 'static.wixstatic.com']);
 
 const isAllowedImageUrl = (value: unknown): value is string => {
