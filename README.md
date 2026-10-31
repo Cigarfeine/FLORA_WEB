@@ -22,10 +22,14 @@ The web experience pairs high-aesthetic editorial motion with an accessible, hea
 - **Spatial Alignment & Expansive Canvas:** Reverse-engineered fluid proportional rem scaling architecture (`.site-max`), spanning 93.3% to 99.6% of viewport width across modern displays with zero horizontal overflow on mobile.
 - **Concurrent Video Loops:** Real-time synchronized playback across 4 high-definition showroom video reels simultaneously without mutual pause interrupts.
 - **GSAP FLIP Scroll Alignment:** Un-transformed bounding-rect snapshotting that morphs hero cards dynamically into the 4-column Selected Work grid.
-- **Interactive Matcher Studio:** 2-step bespoke plant-and-pot pairing customizer with live preview, automatic 10% combo discount math, and celebratory canvas confetti.
+- **Interactive Matcher Studio:** Plant-and-pot pairing with automatic 10% combo discount, plus a room-photo visualizer with draggable placement, scale/rotation controls, and an optional server-side AI room render.
 - **WhatsApp Fulfillment Pipeline:** Direct client-side serialization of the shopping bag into formatted, URL-encoded WhatsApp order receipts (`wa.me/919847000305`).
 
 ---
+
+## Hybrid Room Preview
+
+The Matcher Studio includes a browser-side room upload and placement editor. AI-rendered room previews are optional and require a separately deployed serverless API. See [`AI_PREVIEW_SETUP.md`](./AI_PREVIEW_SETUP.md) for deployment, OpenAI API key, GitHub Pages variable, and Upstash rate-limit configuration. The browser editor remains available when AI is not configured.
 
 ## Architectural Audit Documentation
 
