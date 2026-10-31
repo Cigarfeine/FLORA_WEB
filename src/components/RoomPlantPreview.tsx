@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Download, ImagePlus, LoaderCircle, Move, RotateCcw, Sparkles, Upload, X } from 'lucide-react';
 import type { PlantOption, PotOption } from './PlantPotCustomizer';
 
@@ -13,7 +13,7 @@ interface Position {
 }
 
 const MAX_UPLOAD_BYTES = 12 * 1024 * 1024;
-const MAX_IMAGE_EDGE = 1600;
+const MAX_IMAGE_EDGE = 1400;
 
 const getAiEndpoint = (): string => {
   const meta = import.meta as ImportMeta & {
@@ -92,6 +92,11 @@ export const RoomPlantPreview: React.FC<RoomPlantPreviewProps> = ({
   const [isPreparing, setIsPreparing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    setGeneratedImage(null);
+    setAiError('');
+  }, [selectedPlant.id, selectedPot.id]);
 
   const aiEndpoint = getAiEndpoint();
   const canGenerate = Boolean(aiEndpoint && roomImage && !isGenerating);
@@ -280,6 +285,13 @@ export const RoomPlantPreview: React.FC<RoomPlantPreviewProps> = ({
                     draggingRef.current = false;
                   }}
                   onClick={(event) => event.stopPropagation()}
+                  onKeyDown={(event) => {
+                    const step = event.shiftKey ? 5 : 1;
+                    if (event.key === 'ArrowLeft') setPosition((current) => ({ ...current, x: Math.max(6, current.x - step) }));
+                    if (event.key === 'ArrowRight') setPosition((current) => ({ ...current, x: Math.min(94, current.x + step) }));
+                    if (event.key === 'ArrowUp') setPosition((current) => ({ ...current, y: Math.max(6, current.y - step) }));
+                    if (event.key === 'ArrowDown') setPosition((current) => ({ ...current, y: Math.min(94, current.y + step) }));
+                  }}
                   className="absolute z-10 cursor-grab touch-none active:cursor-grabbing"
                   style={{
                     left: position.x + '%',
