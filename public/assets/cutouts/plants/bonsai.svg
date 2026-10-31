@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 650" fill="none">
+  <defs>
+    <linearGradient id="b-trunk" x1="220" y1="220" x2="380" y2="610" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#8C6747"/>
+      <stop offset="45%" stop-color="#6B4C32"/>
+      <stop offset="100%" stop-color="#47311E"/>
+    </linearGradient>
+    <linearGradient id="b-canopy-dark" x1="120" y1="120" x2="480" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#295235"/>
+      <stop offset="100%" stop-color="#16301E"/>
+    </linearGradient>
+    <linearGradient id="b-canopy-mid" x1="140" y1="80" x2="460" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3F754C"/>
+      <stop offset="100%" stop-color="#234B2D"/>
+    </linearGradient>
+    <linearGradient id="b-canopy-light" x1="160" y1="60" x2="440" y2="310" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#619B6B"/>
+      <stop offset="60%" stop-color="#3B7047"/>
+      <stop offset="100%" stop-color="#275031"/>
+    </linearGradient>
+    <filter id="b-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#0E1E13" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Moss Base Mound -->
+  <path d="M210 605 C235 578, 365 578, 390 605 Z" fill="#4B7F47"/>
+
+  <!-- Sculptural S-Curve Bonsai Trunk & Nebari Roots -->
+  <g filter="url(#b-shadow)">
+    <path d="M235 605 C265 585, 285 555, 275 510 C262 455, 205 420, 215 355 C225 295, 295 268, 315 215 C325 185, 310 155, 290 135 L312 130 C338 155, 355 190, 345 228 C328 285, 262 312, 255 362 C248 412, 308 448, 322 508 C332 552, 345 585, 372 605 Z" fill="url(#b-trunk)"/>
+    <!-- Left Branch -->
+    <path d="M232 365 C195 345, 165 335, 132 338 L138 322 C175 316, 208 325, 245 345 Z" fill="url(#b-trunk)"/>
+    <!-- Right Branch -->
+    <path d="M295 275 C345 268, 395 275, 438 292 L445 276 C402 255, 352 246, 305 252 Z" fill="url(#b-trunk)"/>
+    <!-- Bark Texture Lines -->
+    <path d="M285 585 C298 550, 295 515, 280 480 M242 405 C232 375, 245 342, 275 315 M302 280 C322 252, 330 222, 320 190" stroke="#3B2615" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+  </g>
+
+  <!-- Lower Left Foliage Pad -->
+  <g filter="url(#b-shadow)">
+    <path d="M62 338 C48 315, 68 285, 102 282 C115 265, 148 262, 168 275 C192 268, 222 282, 225 305 C232 325, 212 345, 185 346 C158 352, 115 352, 85 346 C72 345, 66 342, 62 338 Z" fill="url(#b-canopy-dark)"/>
+    <path d="M72 326 C62 308, 80 288, 108 286 C122 270, 152 268, 170 280 C190 275, 212 286, 214 304 C216 318, 198 330, 175 332 C145 336, 105 336, 72 326 Z" fill="url(#b-canopy-light)"/>
+  </g>
+
+  <!-- Mid Right Foliage Pad -->
+  <g filter="url(#b-shadow)">
+    <path d="M352 292 C338 268, 358 238, 395 232 C412 212, 452 210, 478 228 C508 222, 542 242, 542 268 C545 292, 520 310, 488 310 C452 316, 398 315, 368 305 C358 302, 355 298, 352 292 Z" fill="url(#b-canopy-dark)"/>
+    <path d="M364 278 C354 258, 372 238, 404 235 C420 218, 455 216, 476 232 C502 228, 528 244, 528 264 C528 282, 505 294, 475 294 C440 298, 392 296, 364 278 Z" fill="url(#b-canopy-light)"/>
+  </g>
+
+  <!-- Upper Left Foliage Pad -->
+  <g filter="url(#b-shadow)">
+    <path d="M135 222 C122 198, 142 172, 175 168 C192 150, 228 148, 252 162 C278 158, 305 174, 305 196 C308 216, 285 232, 255 232 C222 238, 175 236, 148 228 Z" fill="url(#b-canopy-mid)"/>
+    <path d="M148 210 C138 192, 155 174, 184 170 C200 155, 232 154, 252 166 C274 162, 294 176, 294 192 C294 206, 274 218, 246 218 C215 222, 172 220, 148 210 Z" fill="url(#b-canopy-light)"/>
+  </g>
+
+  <!-- Apex Crown Foliage Pad -->
+  <g filter="url(#b-shadow)">
+    <path d="M192 148 C175 120, 198 85, 238 80 C258 58, 308 55, 338 75 C372 68, 408 92, 408 122 C412 148, 382 168, 345 168 C302 175, 238 172, 205 158 Z" fill="url(#b-canopy-dark)"/>
+    <path d="M206 134 C194 110, 214 86, 248 82 C266 64, 310 62, 336 78 C365 74, 394 94, 394 116 C394 136, 368 150, 334 150 C292 155, 236 152, 206 134 Z" fill="url(#b-canopy-light)"/>
+    <!-- Fine Needle Highlights -->
+    <path d="M245 98 Q260 88 275 98 M295 92 Q312 82 328 92 M342 108 Q358 98 372 108 M105 302 Q122 292 138 302 M152 298 Q168 288 184 298 M405 252 Q422 242 438 252 M458 248 Q475 238 492 248" stroke="#8FD19B" stroke-width="2.5" stroke-linecap="round" opacity="0.65"/>
+  </g>
+</svg>

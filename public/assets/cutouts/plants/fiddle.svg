@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 650" fill="none">
+  <defs>
+    <linearGradient id="f-trunk" x1="290" y1="200" x2="310" y2="610" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#5C4332"/>
+      <stop offset="100%" stop-color="#3E2B1D"/>
+    </linearGradient>
+    <linearGradient id="f-leaf-dark" x1="150" y1="100" x2="450" y2="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2B5836"/>
+      <stop offset="100%" stop-color="#17351F"/>
+    </linearGradient>
+    <linearGradient id="f-leaf-mid" x1="180" y1="60" x2="420" y2="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#437B4E"/>
+      <stop offset="55%" stop-color="#2C5D38"/>
+      <stop offset="100%" stop-color="#1D4226"/>
+    </linearGradient>
+    <linearGradient id="f-leaf-light" x1="220" y1="30" x2="380" y2="310" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#659E6E"/>
+      <stop offset="50%" stop-color="#3F784B"/>
+      <stop offset="100%" stop-color="#285432"/>
+    </linearGradient>
+    <filter id="f-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#0E2014" flood-opacity="0.26"/>
+    </filter>
+  </defs>
+
+  <!-- Woody Branched Trunk -->
+  <path d="M300 610 C298 520, 302 410, 300 240" stroke="url(#f-trunk)" stroke-width="14" stroke-linecap="round"/>
+  <path d="M300 450 C275 410, 235 375, 195 345" stroke="url(#f-trunk)" stroke-width="9" stroke-linecap="round"/>
+  <path d="M300 420 C330 385, 370 350, 405 320" stroke="url(#f-trunk)" stroke-width="9" stroke-linecap="round"/>
+  <path d="M300 320 C268 280, 230 240, 195 205" stroke="url(#f-trunk)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M300 300 C332 260, 368 225, 405 190" stroke="url(#f-trunk)" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Lower Left Violin Leaf -->
+  <g filter="url(#f-shadow)">
+    <path d="M235 375 C195 395, 158 378, 148 352 C142 335, 148 318, 132 302 C110 282, 85 292, 72 265 C58 235, 82 195, 122 198 C155 200, 175 228, 172 248 C170 265, 185 278, 205 285 C232 295, 252 335, 235 375 Z" fill="url(#f-leaf-dark)"/>
+    <path d="M228 365 C185 325, 142 278, 92 225" stroke="#76B080" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+    <path d="M185 325 L152 335 M160 298 L118 308 M135 270 L95 275 M175 312 L185 280 M148 282 L156 242" stroke="#76B080" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  </g>
+
+  <!-- Lower Right Violin Leaf -->
+  <g filter="url(#f-shadow)">
+    <path d="M365 360 C405 380, 442 362, 452 336 C458 320, 452 302, 468 286 C490 266, 515 276, 528 249 C542 219, 518 179, 478 182 C445 184, 425 212, 428 232 C430 249, 415 262, 395 269 C368 279, 348 320, 365 360 Z" fill="url(#f-leaf-dark)"/>
+    <path d="M372 350 C415 310, 458 262, 508 210" stroke="#76B080" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+    <path d="M415 310 L448 320 M440 282 L482 292 M465 254 L505 259 M425 296 L415 264 M452 266 L444 226" stroke="#76B080" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  </g>
+
+  <!-- Upper Left Violin Leaf -->
+  <g filter="url(#f-shadow)">
+    <path d="M262 272 C220 282, 185 258, 180 228 C176 208, 185 190, 170 172 C152 150, 122 152, 112 122 C100 88, 132 52, 175 62 C210 70, 228 102, 222 124 C218 142, 232 158, 250 168 C275 182, 288 228, 262 272 Z" fill="url(#f-leaf-mid)"/>
+    <path d="M256 260 C222 212, 185 158, 142 90" stroke="#8CC496" stroke-width="2.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M225 215 L192 218 M202 182 L162 185 M180 148 L138 145 M215 198 L228 168 M192 162 L205 122" stroke="#8CC496" stroke-width="1.6" stroke-linecap="round" opacity="0.55"/>
+  </g>
+
+  <!-- Upper Right Violin Leaf -->
+  <g filter="url(#f-shadow)">
+    <path d="M338 262 C380 272, 415 248, 420 218 C424 198, 415 180, 430 162 C448 140, 478 142, 488 112 C500 78, 468 42, 425 52 C390 60, 372 92, 378 114 C382 132, 368 148, 350 158 C325 172, 312 218, 338 262 Z" fill="url(#f-leaf-mid)"/>
+    <path d="M344 250 C378 202, 415 148, 458 80" stroke="#8CC496" stroke-width="2.8" stroke-linecap="round" opacity="0.8"/>
+    <path d="M375 205 L408 208 M398 172 L438 175 M420 138 L462 135 M385 188 L372 158 M408 152 L395 112" stroke="#8CC496" stroke-width="1.6" stroke-linecap="round" opacity="0.55"/>
+  </g>
+
+  <!-- Central Crown Violin Leaf -->
+  <g filter="url(#f-shadow)">
+    <path d="M300 245 C265 245, 245 212, 252 182 C256 162, 268 148, 262 128 C254 102, 232 88, 238 58 C245 25, 272 14, 300 18 C328 14, 355 25, 362 58 C368 88, 346 102, 338 128 C332 148, 344 162, 348 182 C355 212, 335 245, 300 245 Z" fill="url(#f-leaf-light)"/>
+    <path d="M300 238 L300 28" stroke="#A6DBAFFE" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+    <path d="M300 195 L265 175 M300 155 L268 135 M300 110 L255 82 M300 70 L265 48 M300 195 L335 175 M300 155 L332 135 M300 110 L345 82 M300 70 L335 48" stroke="#A6DBAF" stroke-width="1.8" stroke-linecap="round" opacity="0.65"/>
+  </g>
+
+  <!-- Foreground Center Violin Leaf -->
+  <g filter="url(#f-shadow)">
+    <path d="M300 415 C268 415, 248 385, 255 358 C258 340, 268 328, 262 310 C255 288, 236 275, 242 248 C248 220, 275 210, 300 214 C325 210, 352 220, 358 248 C364 275, 345 288, 338 310 C332 328, 342 340, 345 358 C352 385, 332 415, 300 415 Z" fill="url(#f-leaf-light)"/>
+    <path d="M300 408 L300 224" stroke="#A6DBAF" stroke-width="2.6" stroke-linecap="round" opacity="0.8"/>
+    <path d="M300 368 L268 350 M300 330 L272 312 M300 288 L258 265 M300 368 L332 350 M300 330 L328 312 M300 288 L342 265" stroke="#A6DBAF" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+  </g>
+</svg>

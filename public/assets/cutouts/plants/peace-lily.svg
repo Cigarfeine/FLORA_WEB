@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 650" fill="none">
+  <defs>
+    <linearGradient id="p-leaf-dark" x1="150" y1="150" x2="450" y2="550" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2D613B"/>
+      <stop offset="100%" stop-color="#15331E"/>
+    </linearGradient>
+    <linearGradient id="p-leaf-bright" x1="180" y1="100" x2="420" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#539162"/>
+      <stop offset="55%" stop-color="#31683F"/>
+      <stop offset="100%" stop-color="#1D4428"/>
+    </linearGradient>
+    <linearGradient id="p-spathe" x1="300" y1="30" x2="300" y2="220" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="70%" stop-color="#F5F3EB"/>
+      <stop offset="100%" stop-color="#D7E5C8"/>
+    </linearGradient>
+    <filter id="p-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#0D1F13" flood-opacity="0.26"/>
+    </filter>
+  </defs>
+
+  <!-- Stems -->
+  <g stroke="#295735" stroke-width="7" stroke-linecap="round" fill="none">
+    <path d="M295 605 C285 480, 250 320, 225 175"/>
+    <path d="M305 605 C315 470, 350 300, 375 155"/>
+    <path d="M300 605 C300 450, 298 280, 298 115"/>
+  </g>
+
+  <!-- Back Leaves -->
+  <g filter="url(#p-shadow)">
+    <path d="M275 585 C210 510, 105 425, 72 315 C145 315, 235 385, 290 545 Z" fill="url(#p-leaf-dark)"/>
+    <path d="M325 585 C390 510, 495 425, 528 315 C455 315, 365 385, 310 545 Z" fill="url(#p-leaf-dark)"/>
+    <path d="M285 565 C225 445, 145 315, 132 195 C205 235, 265 355, 298 535 Z" fill="url(#p-leaf-bright)"/>
+    <path d="M315 565 C375 445, 455 315, 468 195 C395 235, 335 355, 302 535 Z" fill="url(#p-leaf-bright)"/>
+    <path d="M295 550 C258 415, 248 265, 278 145 C318 255, 328 405, 305 550 Z" fill="url(#p-leaf-bright)"/>
+  </g>
+
+  <!-- White Peace Lily Spathes (Flowers) -->
+  <g filter="url(#p-shadow)">
+    <!-- Left Spathe -->
+    <path d="M225 185 C195 165, 182 115, 208 62 C232 105, 248 152, 225 185 Z" fill="url(#p-spathe)"/>
+    <path d="M220 165 L214 108" stroke="#E8D782" stroke-width="7" stroke-linecap="round"/>
+    <!-- Right Spathe -->
+    <path d="M375 165 C348 145, 338 95, 368 45 C392 88, 402 135, 375 165 Z" fill="url(#p-spathe)"/>
+    <path d="M372 145 L368 90" stroke="#E8D782" stroke-width="7" stroke-linecap="round"/>
+    <!-- Center Tall Spathe -->
+    <path d="M298 135 C268 110, 262 58, 298 14 C334 58, 328 110, 298 135 Z" fill="url(#p-spathe)"/>
+    <path d="M298 115 L298 58" stroke="#E8D782" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <!-- Foreground Glossy Leaves with Spotted Variegation -->
+  <g filter="url(#p-shadow)">
+    <path d="M292 595 C235 505, 165 415, 158 310 C228 345, 278 445, 304 595 Z" fill="url(#p-leaf-bright)"/>
+    <path d="M308 595 C365 505, 435 415, 442 310 C372 345, 322 445, 296 595 Z" fill="url(#p-leaf-bright)"/>
+    <!-- Variegation Speckles -->
+    <circle cx="215" cy="395" r="4" fill="#B5E0BD" opacity="0.65"/>
+    <circle cx="232" cy="422" r="3" fill="#B5E0BD" opacity="0.65"/>
+    <circle cx="195" cy="365" r="3.5" fill="#B5E0BD" opacity="0.65"/>
+    <circle cx="385" cy="395" r="4" fill="#B5E0BD" opacity="0.65"/>
+    <circle cx="368" cy="422" r="3" fill="#B5E0BD" opacity="0.65"/>
+    <circle cx="405" cy="365" r="3.5" fill="#B5E0BD" opacity="0.65"/>
+  </g>
+</svg>
