@@ -14,7 +14,7 @@ type PreviewRequest = {
 
 type ApiRequest = {
   method?: string;
-  headers: { origin?: string };
+  headers: { origin?: string; 'x-forwarded-for'?: string };
   body?: PreviewRequest | string;
 };
 
@@ -74,6 +74,47 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     return res.status(503).json({ error: 'The AI preview service is not configured yet.' });
+  }
+
+  // Require a shared rate-limit store before enabling a billable public endpoint.
+  const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+  const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const forwardedFor = req.headers['x-forwarded-for'];
+  const clientIp = forwardedFor?.split(',')[0]?.trim();
+
+  if (!redisUrl || !redisToken || !clientIp) {
+    return res.status(503).json({
+      error: 'AI preview protection is not configured. Please try the manual preview instead.',
+    });
+  }
+
+  try {
+    const rateLimitResponse = await fetch(redisUrl.replace(/\\/$/, '') + '/pipeline', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + redisToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify([
+        ['INCR', 'flora:ai-preview:' + clientIp],
+        ['EXPIRE', 'flora:ai-preview:' + clientIp, 60],
+      ]),
+    });
+
+    if (!rateLimitResponse.ok) {
+      return res.status(503).json({ error: 'AI preview protection is temporarily unavailable.' });
+    }
+
+    const rateLimitResults = await rateLimitResponse.json() as Array<{ result?: number }>;
+    const requestCount = Number(rateLimitResults?.[0]?.result ?? 0);
+    if (requestCount > 5) {
+      res.setHeader('Retry-After', '60');
+      return res.status(429).json({
+        error: 'You have reached the preview limit. Please wait a minute before trying again.',
+      });
+    }
+  } catch {
+    return res.status(503).json({ error: 'AI preview protection is temporarily unavailable.' });
   }
 
   let body: PreviewRequest;
