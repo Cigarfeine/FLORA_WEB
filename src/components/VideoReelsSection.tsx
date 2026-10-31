@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, Volume2, VolumeX, ShoppingBag } from 'lucide-react';
 import { InstagramIcon } from './icons/InstagramIcon';
@@ -11,23 +11,8 @@ export const VideoReelsSection: React.FC = () => {
   const [activeReelIndex, setActiveReelIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
-  const [spaceIndex, setSpaceIndex] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const spaces = [
-    'LIVING ROOMS',
-    'BALCONIES',
-    'MINIMALIST SPACES',
-    'SUNLIT PATIOS',
-    'BOUTIQUE CAFÉS',
-  ];
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSpaceIndex((prev) => (prev + 1) % spaces.length);
-    }, 2800);
-    return () => clearInterval(timer);
-  }, [spaces.length]);
 
   const activeReel = VIDEO_REELS[activeReelIndex];
 
@@ -65,31 +50,17 @@ export const VideoReelsSection: React.FC = () => {
 
   return (
     <section id="reels" className="py-24 bg-ngen-darkgreen text-ngen-cream relative overflow-hidden border-b border-black/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="site-max relative z-10">
         
         {/* Section Header with New Engen Kinetic Badge */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ngen-green border border-white/10 text-xs font-mono font-bold uppercase tracking-wider text-ngen-lime mb-4">
+            <div className="flex items-center gap-2 text-xs sm:text-sm font-mono font-extrabold uppercase tracking-widest text-ngen-lime mb-3">
               <InstagramIcon className="w-3.5 h-3.5" />
-              <span>@flora__pots • Live Showroom Reels</span>
+              <span>Showroom Archive • @flora__pots</span>
             </div>
-            <h2 className="font-display font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl uppercase tracking-[-0.03em] text-white leading-[0.95]">
-              CULTIVATING HARMONY FOR{' '}
-              <span className="inline-block relative">
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={spaceIndex}
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -20, opacity: 0 }}
-                    transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
-                    className="inline-block bg-ngen-lime text-ngen-charcoal px-3.5 py-0.5 rounded-full font-black text-2xl sm:text-3xl md:text-4xl lg:text-5xl align-middle"
-                  >
-                    {spaces[spaceIndex]}
-                  </motion.span>
-                </AnimatePresence>
-              </span>
+            <h2 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-[-0.03em] text-white leading-[1.05]">
+              Living Botanicals in Architectural Motion
             </h2>
           </div>
           <DualTextButton
@@ -163,7 +134,7 @@ export const VideoReelsSection: React.FC = () => {
                   <span className="text-[10px] uppercase font-mono font-bold tracking-wider text-ngen-lime block mb-0.5">
                     {activeReel.subtitle}
                   </span>
-                  <h3 className="font-display font-black text-sm uppercase text-white mb-3">
+                  <h3 className="font-display font-bold text-sm sm:text-base text-white mb-3">
                     {activeReel.title}
                   </h3>
 
@@ -211,13 +182,18 @@ export const VideoReelsSection: React.FC = () => {
                   }`}
                 >
                   <div className="relative w-16 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-black border border-white/10">
-                    <img
-                      src={reel.posterUrl}
-                      alt={reel.title}
+                    <video
+                      src={reel.videoUrl}
+                      poster={reel.posterUrl}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload="metadata"
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                      <Play className="w-4 h-4 text-white fill-white" />
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                      <Play className="w-3.5 h-3.5 text-white fill-white opacity-80" />
                     </div>
                   </div>
 
@@ -230,7 +206,7 @@ export const VideoReelsSection: React.FC = () => {
                         {reel.duration}
                       </span>
                     </div>
-                    <h4 className="font-display font-black text-sm uppercase text-white truncate mb-1">
+                    <h4 className="font-display font-bold text-sm text-white truncate mb-1">
                       {reel.title}
                     </h4>
                     <p className="text-xs text-ngen-cream/70 truncate font-sans">

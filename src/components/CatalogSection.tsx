@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ShoppingBag, MessageCircle, SlidersHorizontal, Check, Sparkles } from 'lucide-react';
+import { Search, ShoppingBag, MessageCircle, SlidersHorizontal, Check } from 'lucide-react';
 import { PRODUCTS, FLORA_INFO } from '../data/catalog';
 import { ProductCategory, Product } from '../types';
 import { useCart } from '../context/CartContext';
@@ -44,17 +44,16 @@ export const CatalogSection: React.FC = () => {
 
   return (
     <section id="collection" className="py-24 bg-ngen-cream text-ngen-charcoal relative border-b border-ngen-charcoal/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="site-max">
         
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ngen-green text-ngen-cream font-mono text-[11px] font-bold uppercase tracking-wider mb-4 border border-ngen-green">
-              <Sparkles className="w-3.5 h-3.5 text-ngen-lime" />
-              <span>Curated Inventory</span>
-            </div>
-            <h2 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl uppercase tracking-[-0.03em] text-ngen-charcoal leading-[0.95]">
-              SCULPTURAL POTS<br />& LIVING FLORA
+            <span className="text-xs sm:text-sm font-mono font-extrabold uppercase tracking-widest text-ngen-green block mb-3">
+              Collection &amp; Curated Inventory
+            </span>
+            <h2 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl tracking-[-0.03em] text-ngen-charcoal leading-[1.05]">
+              Sculptural Pots &amp; Living Flora
             </h2>
           </div>
           <p className="text-ngen-charcoal/70 text-sm sm:text-base max-w-md font-sans">
@@ -190,10 +189,10 @@ export const CatalogSection: React.FC = () => {
                             {product.dimensions}
                           </span>
                         )}
-                        <h3 className="font-display font-black text-base uppercase text-ngen-charcoal mb-2 leading-snug group-hover:text-ngen-green transition-colors line-clamp-1">
+                        <h3 className="font-display font-bold text-base text-ngen-charcoal mb-1.5 leading-snug group-hover:text-ngen-green transition-colors line-clamp-1">
                           {product.name}
                         </h3>
-                        <p className="text-xs text-ngen-charcoal/70 line-clamp-2 leading-relaxed mb-4">
+                        <p className="text-xs text-ngen-charcoal/70 line-clamp-2 leading-relaxed mb-4 font-sans">
                           {product.description}
                         </p>
                       </div>
@@ -218,7 +217,7 @@ export const CatalogSection: React.FC = () => {
 
                         <button
                           onClick={() => handleAddToCart(product)}
-                          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-display font-black uppercase tracking-wider transition-all duration-200 active:scale-95 border ${
+                          className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-mono font-bold uppercase tracking-wider transition-all duration-200 active:scale-95 border cursor-pointer ${
                             isJustAdded
                               ? 'bg-emerald-600 text-white border-emerald-600'
                               : 'bg-ngen-peach hover:bg-ngen-peachHover text-ngen-charcoal border-ngen-peach'

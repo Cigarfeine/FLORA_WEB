@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Droplets, Sun, Wind, Sparkles, Sprout } from 'lucide-react';
+import { ArrowUpRight, Droplets, Sun, Wind, Sprout } from 'lucide-react';
 
 interface GuideItem {
   id: string;
@@ -61,52 +61,55 @@ export const CareGuideSection: React.FC = () => {
   ];
 
   return (
-    <section id="care" className="py-24 bg-ngen-cream text-ngen-charcoal relative border-b border-ngen-charcoal/10">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="care" className="py-24 sm:py-32 bg-ngen-cream text-ngen-charcoal relative border-b border-black/10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ngen-green text-ngen-cream font-mono text-[11px] font-bold uppercase tracking-wider mb-4 border border-ngen-green">
-            <Sparkles className="w-3.5 h-3.5 text-ngen-lime" />
-            <span>Flora Botanical Almanac</span>
-          </div>
-          <h2 className="font-display font-black text-3xl sm:text-5xl uppercase tracking-[-0.03em] text-ngen-charcoal leading-[0.95] mb-3">
-            PLANT CARE &<br />PLANTER WISDOM
+        {/* Header (Clean New Engen Editorial Header) */}
+        <div className="mb-14 sm:mb-16">
+          <span className="text-xs sm:text-sm font-mono font-extrabold uppercase tracking-widest text-ngen-green block mb-3">
+            Botanical Almanac &amp; Care Guidance
+          </span>
+          <h2 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl tracking-[-0.03em] text-ngen-charcoal leading-[1.05] mb-4">
+            Plant Care &amp; Planter Wisdom
           </h2>
-          <p className="text-ngen-charcoal/70 text-sm sm:text-base max-w-lg mx-auto font-sans">
+          <p className="text-ngen-charcoal/70 text-sm sm:text-base max-w-xl font-sans leading-relaxed">
             Practical, field-tested guidance to keep your houseplants and designer pots pristine in Kerala homes.
           </p>
         </div>
 
-        {/* Accordion Deck - Flat Architectural Cards */}
-        <div className="space-y-3">
+        {/* Divided List Accordion (Authentic New Engen Minimalist Architecture) */}
+        <div className="divide-y divide-black/15 border-y border-black/15">
           {guideItems.map((item) => {
             const isOpen = openId === item.id;
             return (
               <div
                 key={item.id}
-                className="bg-white rounded-2xl border border-ngen-charcoal/10 overflow-hidden transition-colors hover:border-ngen-charcoal/30"
+                className="transition-colors duration-200"
               >
                 <button
                   onClick={() => setOpenId(isOpen ? '' : item.id)}
                   aria-expanded={isOpen}
-                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
+                  className="w-full py-6 sm:py-7 text-left flex items-center justify-between gap-4 cursor-pointer select-none group"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-xl bg-ngen-cream border border-ngen-charcoal/10 flex-shrink-0">
-                      {item.icon}
-                    </div>
-                    <span className="font-display font-black text-sm sm:text-base uppercase tracking-tight text-ngen-charcoal">
-                      {item.question}
-                    </span>
-                  </div>
-                  <motion.div
-                    animate={{ rotate: isOpen ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="p-1 text-ngen-charcoal/60"
+                  <span
+                    className={`font-display font-bold text-xl sm:text-2xl tracking-tight transition-colors duration-300 ${
+                      isOpen
+                        ? 'text-ngen-green'
+                        : 'text-ngen-charcoal group-hover:text-ngen-green'
+                    }`}
                   >
-                    <ChevronDown className="w-5 h-5" />
-                  </motion.div>
+                    {item.question}
+                  </span>
+
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 shrink-0 ${
+                      isOpen
+                        ? 'text-ngen-green rotate-45'
+                        : 'text-ngen-charcoal/40 group-hover:text-ngen-green group-hover:translate-x-1'
+                    }`}
+                  >
+                    <ArrowUpRight className="w-5 h-5" />
+                  </div>
                 </button>
 
                 <AnimatePresence initial={false}>
@@ -115,13 +118,14 @@ export const CareGuideSection: React.FC = () => {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
+                      transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
+                      className="overflow-hidden"
                     >
-                      <div className="px-5 pb-6 sm:px-6 pt-0 border-t border-ngen-charcoal/10 text-sm text-ngen-charcoal/80 leading-relaxed font-sans">
-                        <p className="mt-4 mb-4 text-ngen-charcoal font-medium">{item.answer}</p>
-                        <ul className="space-y-2.5 pl-1">
+                      <div className="pb-8 pt-2 text-sm text-ngen-charcoal/80 leading-relaxed font-sans max-w-3xl">
+                        <p className="mb-4 text-base text-ngen-charcoal font-medium">{item.answer}</p>
+                        <ul className="space-y-3 pl-2">
                           {item.bulletPoints.map((bp, i) => (
-                            <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-ngen-charcoal/70">
+                            <li key={i} className="flex items-start gap-3 text-xs sm:text-sm text-ngen-charcoal/75">
                               <span className="w-1.5 h-1.5 rounded-full bg-ngen-green mt-2 flex-shrink-0" />
                               <span>{bp}</span>
                             </li>

@@ -58,7 +58,7 @@ export const CartDrawer: React.FC = () => {
             <div className="p-5 sm:p-6 border-b border-ngen-charcoal/10 flex items-center justify-between bg-white">
               <div className="flex items-center gap-2.5">
                 <ShoppingBag className="w-5 h-5 text-ngen-green" />
-                <h3 className="font-display font-black text-lg uppercase tracking-tight text-ngen-charcoal">
+                <h3 className="font-display font-bold text-lg text-ngen-charcoal tracking-tight">
                   Your Botanical Bag
                 </h3>
                 <span className="px-2 py-0.5 rounded-full bg-ngen-green text-ngen-cream text-xs font-mono font-bold">

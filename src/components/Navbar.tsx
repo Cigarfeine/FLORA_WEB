@@ -4,92 +4,80 @@ import { useCart } from '../context/CartContext';
 import { FLORA_INFO } from '../data/catalog';
 import { DualTextButton } from './ui/DualTextButton';
 
-export const AnnouncementBanner: React.FC<{ onDismiss?: () => void }> = ({ onDismiss }) => {
-  return (
-    <div className="bg-ngen-lime text-ngen-charcoal font-bold text-xs py-2 px-4 text-center tracking-wide flex items-center justify-center gap-3 border-b border-black/10 select-none w-full pointer-events-auto">
-      <span className="truncate">Kerala's Premier Botanical & Planter Destination • Showroom open daily in Nellikuzhi • Free Delivery over ₹999</span>
-      {onDismiss && (
-        <button
-          onClick={onDismiss}
-          aria-label="Dismiss banner"
-          className="opacity-70 hover:opacity-100 transition-opacity ml-2 cursor-pointer shrink-0"
-        >
-          <X className="w-3.5 h-3.5" />
-        </button>
-      )}
-    </div>
-  );
-};
-
 export const Navbar: React.FC = () => {
   const { totalItems, setIsOpen } = useCart();
   const [scrolled, setScrolled] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [bannerDismissed, setBannerDismissed] = useState(false);
+  const [activeSectionTitle, setActiveSectionTitle] = useState('SELECTED WORK');
+  const [isDarkSection, setIsDarkSection] = useState(false);
 
   useEffect(() => {
-    let lastY = window.scrollY;
-
     const handleScroll = () => {
-      const currentY = window.scrollY;
-      setScrolled(currentY > 40);
+      const scrollY = window.scrollY;
+      setScrolled(scrollY > 50);
 
-      // Directional auto-hide on downscroll, show on upscroll (New Engen pattern)
-      if (currentY > 160) {
-        if (currentY > lastY + 6) {
-          setIsVisible(false); // scrolling down
-        } else if (currentY < lastY - 6) {
-          setIsVisible(true); // scrolling up
+      // Section detection for center header label
+      const sections = [
+        { id: 'curations', title: 'SELECTED WORK', isDark: false },
+        { id: 'services', title: 'SERVICES & CRAFT', isDark: true },
+        { id: 'collection', title: 'CURATED CATALOG', isDark: false },
+        { id: 'studio', title: 'POTTERY ATELIER', isDark: false },
+        { id: 'reels', title: 'STUDIO REELS', isDark: true },
+        { id: 'care', title: 'BOTANICAL CARE', isDark: false },
+        { id: 'location', title: 'KERALA SANCTUARY', isDark: false },
+      ];
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i].id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 140) {
+            setActiveSectionTitle(sections[i].title);
+            setIsDarkSection(sections[i].isDark);
+            return;
+          }
         }
-      } else {
-        setIsVisible(true);
       }
-      lastY = currentY;
+      setActiveSectionTitle('SELECTED WORK');
+      setIsDarkSection(false);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navLinks = [
-    { label: 'Work & Catalog', href: '#collection' },
+    { label: 'Work', href: '#curations' },
     { label: 'Services', href: '#services' },
-    { label: 'Matcher Studio', href: '#studio' },
-    { label: 'Showroom Reels', href: '#reels' },
-    { label: 'Botanical Care', href: '#care' },
-    { label: 'Visit Store', href: '#location' },
+    { label: 'Catalog', href: '#collection' },
+    { label: 'Studio', href: '#studio' },
+    { label: 'Reels', href: '#reels' },
+    { label: 'Care', href: '#care' },
+    { label: 'Visit', href: '#location' },
   ];
 
   return (
-    <div
-      className={`fixed top-0 left-0 right-0 z-40 pointer-events-none transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] ${
-        isVisible ? 'translate-y-0' : '-translate-y-full -translate-y-4'
-      }`}
-    >
-      {/* Top Announcement Banner (Visible when un-scrolled and not dismissed) */}
-      {!scrolled && !bannerDismissed && (
-        <AnnouncementBanner onDismiss={() => setBannerDismissed(true)} />
-      )}
-
+    <div className="fixed top-0 left-0 right-0 z-40 pointer-events-none transition-all duration-300">
       {/* Main Navigation Header Bar (Authentic New Engen layout matching screenshots) */}
-      <header className="w-full max-w-7xl mx-auto px-4 sm:px-8 pt-4 sm:pt-6 transition-all duration-300">
+      <header className="site-max pt-4 sm:pt-6 transition-all duration-300">
         <div className="flex items-center justify-between w-full">
           
-          {/* Left: Morphing Brand Identity (Text on canvas at scroll 0 -> Compact dark badge when scrolled) */}
+          {/* Left: Morphing Brand Identity (Text on canvas at scroll 0 -> 44px dark squircle badge when scrolled) */}
           <a
             href="#"
+            aria-label="Flora Pots & Plants Home"
             className={`pointer-events-auto flex items-center transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] shrink-0 select-none ${
               scrolled
-                ? 'gap-0 p-1.5 sm:p-2 rounded-2xl bg-ngen-charcoal border border-white/15'
+                ? 'w-11 h-11 p-2 rounded-2xl bg-ngen-charcoal border border-white/15 shadow-xl justify-center'
                 : 'gap-3 p-0 bg-transparent border-transparent'
             }`}
           >
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden border border-white/20 bg-white p-0.5 shrink-0 flex items-center justify-center">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden shrink-0 flex items-center justify-center">
               <img
                 src={FLORA_INFO.logo}
                 alt="Flora Pots & Plants Emblem"
-                className="w-full h-full object-cover rounded-full"
+                className="w-full h-full object-cover"
               />
             </div>
             
@@ -101,7 +89,7 @@ export const Navbar: React.FC = () => {
                   : 'max-w-[240px] opacity-100 pr-2'
               }`}
             >
-              <span className="font-display font-black text-base sm:text-lg tracking-tighter text-white block leading-none whitespace-nowrap">
+              <span className="font-display font-black text-base sm:text-lg tracking-tight text-white block leading-none whitespace-nowrap">
                 FLORA
               </span>
               <span className="text-[8px] sm:text-[9px] tracking-widest uppercase font-mono font-bold text-ngen-lime block mt-0.5 leading-none whitespace-nowrap">
@@ -110,25 +98,42 @@ export const Navbar: React.FC = () => {
             </div>
           </a>
 
+          {/* Center: Selected Work / Current Section Title matching media_1793382277080.png */}
+          <div
+            className={`hidden md:flex items-center justify-center pointer-events-none transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] ${
+              scrolled
+                ? 'opacity-100 translate-y-0'
+                : 'opacity-0 -translate-y-2'
+            }`}
+          >
+            <span
+              className={`text-[11px] font-mono font-bold uppercase tracking-widest transition-colors duration-300 ${
+                isDarkSection ? 'text-ngen-cream/90' : 'text-ngen-charcoal'
+              }`}
+            >
+              {activeSectionTitle}
+            </span>
+          </div>
+
           {/* Right Group: Links Capsule + Coral CTA + Bag */}
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             
-            {/* New Engen Signature Links (Bare on canvas at scroll 0 -> Floating capsule pill when scrolled) */}
+            {/* New Engen Signature Links (Bare on canvas at scroll 0 -> 44px Dark Slate Pine capsule pill when scrolled) */}
             <nav
               className={`hidden lg:flex items-center gap-6 xl:gap-8 transition-all duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] pointer-events-auto shrink-0 ${
                 scrolled
-                  ? 'px-6 py-2.5 rounded-full bg-ngen-green text-ngen-cream border border-white/15'
-                  : 'px-0 py-0 bg-transparent border-transparent text-white'
+                  ? 'h-11 px-7 rounded-full bg-ngen-green text-ngen-cream border border-white/15 shadow-xl'
+                  : 'h-11 px-0 py-0 bg-transparent border-transparent text-white'
               }`}
             >
               {navLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
-                  className={`text-xs font-bold uppercase tracking-wider transition-colors duration-200 py-0.5 font-display whitespace-nowrap ${
+                  className={`text-[13px] font-medium tracking-normal transition-colors duration-200 font-sans whitespace-nowrap ${
                     scrolled
-                      ? 'text-ngen-cream/80 hover:text-ngen-lime'
-                      : 'text-white/85 hover:text-ngen-lime'
+                      ? 'text-ngen-cream/90 hover:text-white'
+                      : 'text-white/85 hover:text-white'
                   }`}
                 >
                   {link.label}
@@ -136,7 +141,7 @@ export const Navbar: React.FC = () => {
               ))}
             </nav>
 
-            {/* Coral CTA Pill Button with Electric Lime Hover Fill Curtain */}
+            {/* Coral CTA Pill Button (Exact 44px height matching media_1793382277080.png) */}
             <DualTextButton
               href={`https://wa.me/${FLORA_INFO.whatsappRaw}?text=${encodeURIComponent('Hello Flora Pots & Plants! I would like to consult about plants and planters.')}`}
               target="_blank"
@@ -144,17 +149,17 @@ export const Navbar: React.FC = () => {
               variant="peach"
               size="md"
               showArrow
-              className="pointer-events-auto hidden sm:inline-flex"
+              className="pointer-events-auto hidden sm:inline-flex shadow-sm h-11 px-5"
             >
               Let's talk
             </DualTextButton>
 
-            {/* Shopping Bag Button */}
+            {/* Shopping Bag Button (Exact 44px height matching media_1793382277080.png) */}
             <button
               onClick={() => setIsOpen(true)}
-              aria-label="Open Shopping Bag"
-              className={`pointer-events-auto relative p-3 rounded-full border border-white/15 text-white transition-all duration-300 active:scale-95 cursor-pointer flex items-center justify-center shrink-0 ${
-                scrolled ? 'bg-ngen-green hover:bg-ngen-darkgreen' : 'bg-black/30 hover:bg-black/50'
+              aria-label={totalItems > 0 ? `${totalItems} items in shopping bag` : 'Shopping bag'}
+              className={`pointer-events-auto relative w-11 h-11 rounded-full border border-white/15 text-white transition-all duration-300 active:scale-95 cursor-pointer flex items-center justify-center shrink-0 ${
+                scrolled ? 'bg-ngen-green hover:bg-ngen-green/80 shadow-md' : 'bg-black/30 hover:bg-black/50'
               }`}
             >
               <ShoppingBag className="w-4 h-4 text-ngen-cream" />
@@ -169,8 +174,8 @@ export const Navbar: React.FC = () => {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle Navigation Menu"
-              className={`pointer-events-auto lg:hidden p-3 rounded-full border border-white/15 text-white transition-colors cursor-pointer shrink-0 flex items-center justify-center ${
-                scrolled ? 'bg-ngen-green' : 'bg-black/30'
+              className={`pointer-events-auto lg:hidden w-11 h-11 rounded-full border border-white/15 text-white transition-colors cursor-pointer shrink-0 flex items-center justify-center ${
+                scrolled ? 'bg-ngen-green shadow-md' : 'bg-black/30'
               }`}
             >
               {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}

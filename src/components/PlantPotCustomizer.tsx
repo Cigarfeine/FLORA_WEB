@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, ShoppingBag, Check, Layers, SunMedium, Droplets } from 'lucide-react';
-import confetti from 'canvas-confetti';
+import { ShoppingBag, Check, Layers, SunMedium, Droplets } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { Product } from '../types';
 
@@ -129,35 +128,23 @@ export const PlantPotCustomizer: React.FC = () => {
 
     addItem(comboProduct, selectedPot.colorName);
 
-    try {
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.8 },
-        colors: ['#334238', '#CCE561', '#FF9C94'],
-      });
-    } catch {
-      // ignore
-    }
-
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
   };
 
   return (
     <section id="studio" className="py-24 bg-ngen-green text-ngen-cream relative overflow-hidden border-b border-black/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="site-max relative z-10">
         
         {/* Studio Heading */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ngen-darkgreen border border-white/10 text-ngen-lime font-mono text-[11px] font-bold uppercase tracking-wider mb-4">
-            <Sparkles className="w-3.5 h-3.5 text-ngen-peach" />
-            <span>Interactive Matcher Studio</span>
-          </div>
-          <h2 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl uppercase tracking-[-0.03em] text-white leading-[0.95] mb-4">
-            PAIR FLORA WITH<br />SCULPTURAL POTS
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="text-xs sm:text-sm font-mono font-extrabold uppercase tracking-widest text-ngen-lime block mb-3">
+            Interactive Matcher Studio
+          </span>
+          <h2 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl tracking-[-0.03em] text-white leading-[1.05] mb-4">
+            Pair Living Flora with Sculptural Pots
           </h2>
-          <p className="text-ngen-cream/70 text-sm sm:text-base">
+          <p className="text-ngen-cream/70 text-sm sm:text-base font-sans max-w-xl mx-auto leading-relaxed">
             Visualize your ideal botanical arrangement. Bundle any living plant with a designer planter to unlock an automatic 10% studio pairing discount.
           </p>
         </div>
@@ -330,7 +317,7 @@ export const PlantPotCustomizer: React.FC = () => {
                 </div>
 
                 {/* Bundle Summary */}
-                <h3 className="font-display font-black text-xl uppercase tracking-tight text-white mb-1">
+                <h3 className="font-display font-bold text-xl tracking-tight text-white mb-1">
                   {selectedPlant.name} in {selectedPot.name}
                 </h3>
                 <p className="text-xs text-ngen-cream/70 mb-4 leading-relaxed font-sans">

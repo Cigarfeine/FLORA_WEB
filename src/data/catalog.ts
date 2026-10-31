@@ -157,7 +157,7 @@ export const PRODUCTS: Product[] = [
     badge: 'Blooming',
     description: 'Lush dark glossy foliage punctuated with elegant white spathe blooms. Actively absorbs airborne toxins while indicating watering needs with gentle droop.',
     dimensions: 'Pot size 6" | Plant height 16"-18"',
-    image: 'https://images.unsplash.com/photo-1593691509543-c55fb32e7355?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1592150621744-aca64f48394a?auto=format&fit=crop&w=800&q=80',
     inStock: true,
     careLevel: 'Easy',
     lightRequirement: 'Low to Medium Light',

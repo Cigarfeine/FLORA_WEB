@@ -3,14 +3,15 @@ import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CartProvider, useCart } from './context/CartContext';
+import { Preloader } from './components/Preloader';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
-import { MarqueeStrip } from './components/MarqueeStrip';
 import { EditorialManifesto } from './components/EditorialManifesto';
 import { ServicesSection } from './components/ServicesSection';
 import { CatalogSection } from './components/CatalogSection';
 import { PlantPotCustomizer } from './components/PlantPotCustomizer';
 import { VideoReelsSection } from './components/VideoReelsSection';
+import { AwardsSection } from './components/AwardsSection';
 import { CareGuideSection } from './components/CareGuideSection';
 import { SocialProofSection } from './components/SocialProofSection';
 import { StoreLocationSection } from './components/StoreLocationSection';
@@ -53,13 +54,12 @@ const FloatingActions: React.FC = () => {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Direct WhatsApp Consultation with Flora"
-        className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-300 hover:scale-105 active:scale-95 border border-white/20 cursor-pointer"
+        className="group relative flex items-center justify-center w-13 h-13 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-300 hover:scale-105 active:scale-95 border border-white/20 cursor-pointer shadow-lg"
       >
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-20"></span>
-        <MessageCircle className="w-6 h-6 fill-white" />
+        <MessageCircle className="w-5 h-5 fill-white" />
         
         {/* Tooltip on Hover */}
-        <span className="absolute right-16 px-3 py-1.5 rounded-full bg-ngen-darkgreen text-ngen-cream text-xs font-medium uppercase tracking-wider whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-white/10">
+        <span className="absolute right-16 px-3 py-1.5 rounded-full bg-ngen-darkgreen text-ngen-cream text-xs font-mono font-medium uppercase tracking-wider whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none border border-white/10">
           Chat with Flora Expert
         </span>
       </a>
@@ -100,16 +100,17 @@ export function AppContent() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-ngen-cream text-ngen-charcoal flex flex-col font-sans selection:bg-ngen-peach selection:text-ngen-charcoal overflow-x-hidden w-full max-w-full">
+    <div className="min-h-screen bg-ngen-cream text-ngen-charcoal flex flex-col font-sans selection:bg-ngen-peach selection:text-ngen-charcoal overflow-x-clip w-full max-w-full">
+      <Preloader />
       <Navbar />
-      <main className="flex-grow overflow-x-hidden w-full max-w-full">
+      <main className="flex-grow overflow-x-clip w-full max-w-full">
         <HeroSection />
         <EditorialManifesto />
-        <MarqueeStrip />
         <ServicesSection />
         <CatalogSection />
         <PlantPotCustomizer />
         <VideoReelsSection />
+        <AwardsSection />
         <CareGuideSection />
         <SocialProofSection />
         <StoreLocationSection />

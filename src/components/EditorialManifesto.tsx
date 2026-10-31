@@ -8,7 +8,7 @@ interface WordProps {
 }
 
 const ScrubWord: React.FC<WordProps> = ({ children, progress, range }) => {
-  const opacity = useTransform(progress, range, [0.15, 1.0]);
+  const opacity = useTransform(progress, range, [0.3, 1.0]);
   const y = useTransform(progress, range, [4, 0]);
 
   return (
@@ -37,21 +37,21 @@ export const EditorialManifesto: React.FC = () => {
       ref={containerRef}
       className="pt-36 sm:pt-48 pb-28 sm:pb-36 bg-ngen-cream text-ngen-charcoal border-b border-black/10 relative z-10 overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="site-max">
         
         {/* Eyebrow Label */}
         <div className="flex items-center justify-between pb-8 mb-10 border-b border-black/10">
           <span className="text-xs uppercase font-mono font-bold tracking-widest text-ngen-green">
-            01 / PHILOSOPHY & BOTANICAL MANIFESTO
+            Philosophy & Botanical Manifesto
           </span>
-          <span className="text-xs font-mono text-ngen-charcoal/60 uppercase">
+          <span className="text-xs font-mono text-ngen-charcoal/80 font-semibold uppercase">
             Nellikuzhi • Kerala
           </span>
         </div>
 
         {/* Large Scrubbing Text Reveal (New Engen style) */}
-        <div className="max-w-5xl">
-          <p className="font-display font-black text-2xl sm:text-4xl md:text-5xl lg:text-6xl uppercase tracking-[-0.03em] leading-[1.08] text-ngen-charcoal">
+        <div className="max-w-6xl">
+          <p className="font-display font-bold text-3xl sm:text-5xl lg:text-6xl xl:text-[4.25rem] tracking-[-0.03em] leading-[1.08] text-ngen-charcoal">
             {words.map((word, i) => {
               const start = i / words.length;
               const end = start + 1 / words.length;

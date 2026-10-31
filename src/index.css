@@ -46,6 +46,28 @@ html.lenis, html.lenis body {
   border: 1px solid rgba(250, 242, 232, 0.12);
 }
 
+/* New Engen Expansive Layout: Spans screen edges with calibrated 3.33vw gutters */
+.site-max {
+  width: 100%;
+  max-width: 1920px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(1.25rem, 3.33vw, 4rem);
+  padding-right: clamp(1.25rem, 3.33vw, 4rem);
+}
+
+.site-max .site-max {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Hardware accelerated layer */
+.gpu-layer {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
 /* Custom Minimal Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -60,3 +82,4 @@ html.lenis, html.lenis body {
 ::-webkit-scrollbar-thumb:hover {
   background: #334238;
 }
+

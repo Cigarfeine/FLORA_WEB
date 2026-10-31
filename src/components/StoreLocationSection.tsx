@@ -1,12 +1,12 @@
 import React from 'react';
-import { MapPin, Phone, Clock, Building2, Car, Sparkles, Shield } from 'lucide-react';
+import { MapPin, Phone, Clock, Car, Sparkles, Shield } from 'lucide-react';
 import { FLORA_INFO } from '../data/catalog';
 import { DualTextButton } from './ui/DualTextButton';
 
 export const StoreLocationSection: React.FC = () => {
   return (
     <section id="location" className="py-24 bg-ngen-green text-ngen-cream relative overflow-hidden border-b border-black/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="site-max relative z-10">
         
         {/* Asymmetric Split: Store Information (6 cols) & Real Showroom Visual (6 cols) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -14,12 +14,11 @@ export const StoreLocationSection: React.FC = () => {
           {/* Store Info Column (6 Cols) */}
           <div className="lg:col-span-6 space-y-8">
             <div>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ngen-darkgreen border border-white/10 text-ngen-lime font-mono text-[11px] font-bold uppercase tracking-wider mb-4">
-                <Building2 className="w-3.5 h-3.5 text-ngen-peach" />
-                <span>Showroom & Garden Destination</span>
-              </div>
-              <h2 className="font-display font-black text-4xl sm:text-5xl lg:text-6xl uppercase tracking-[-0.03em] text-white leading-[0.95] mb-4">
-                VISIT FLORA IN<br />NELLIKUZHI
+              <span className="text-xs sm:text-sm font-mono font-extrabold uppercase tracking-widest text-ngen-lime block mb-3">
+                Showroom &amp; Garden Destination
+              </span>
+              <h2 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl tracking-[-0.03em] text-white leading-[1.05] mb-4">
+                Visit Flora in Nellikuzhi
               </h2>
               <p className="text-ngen-cream/70 text-sm sm:text-base leading-relaxed font-sans">
                 Experience our curated collection of ceramic planters, fiber urns, and lush indoor tropical flora in person. Our horticulture team is always on-site to assist with pot sizing, root care, and repotting.
@@ -34,9 +33,9 @@ export const StoreLocationSection: React.FC = () => {
                   <MapPin className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="font-display font-black text-xs text-white mb-1 uppercase tracking-wider">
+                  <p className="font-display font-black text-xs text-white mb-1 uppercase tracking-wider">
                     Store Address
-                  </h4>
+                  </p>
                   <p className="text-xs sm:text-sm text-ngen-cream/80 leading-normal font-sans">
                     {FLORA_INFO.address}
                   </p>
@@ -51,13 +50,13 @@ export const StoreLocationSection: React.FC = () => {
                   <Clock className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="font-display font-black text-xs text-white mb-1 uppercase tracking-wider">
+                  <p className="font-display font-black text-xs text-white mb-1 uppercase tracking-wider">
                     Operating Hours
-                  </h4>
+                  </p>
                   <p className="text-xs sm:text-sm text-ngen-cream/80 font-sans">
                     {FLORA_INFO.hours}
                   </p>
-                  <span className="text-[11px] text-ngen-cream/60 mt-1.5 block font-mono">
+                  <span className="text-[11px] text-ngen-cream/80 mt-1.5 block font-mono">
                     Open all public holidays for plant lovers
                   </span>
                 </div>
@@ -68,9 +67,9 @@ export const StoreLocationSection: React.FC = () => {
                   <Phone className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="font-display font-black text-xs text-white mb-1 uppercase tracking-wider">
+                  <p className="font-display font-black text-xs text-white mb-1 uppercase tracking-wider">
                     Direct Contact Lines
-                  </h4>
+                  </p>
                   <p className="text-xs sm:text-sm text-ngen-cream/80 font-mono">
                     {FLORA_INFO.phone} / {FLORA_INFO.phoneAlt}
                   </p>
@@ -130,7 +129,7 @@ export const StoreLocationSection: React.FC = () => {
                 <span className="text-[10px] uppercase font-mono font-bold tracking-widest text-ngen-lime block mb-1">
                   On-Site Destination
                 </span>
-                <h3 className="font-display font-black text-lg sm:text-xl uppercase text-white">
+                <h3 className="font-display font-bold text-lg sm:text-xl text-white">
                   Appadath Building, Nellikuzhi Storefront
                 </h3>
               </div>
@@ -140,20 +139,20 @@ export const StoreLocationSection: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="p-4 rounded-2xl bg-ngen-darkgreen border border-white/10 text-center text-white">
                 <Car className="w-4 h-4 text-ngen-peach mx-auto mb-2" />
-                <h5 className="font-display font-black text-xs text-white mb-1 uppercase tracking-wider">Easy Parking</h5>
-                <p className="text-[11px] text-ngen-cream/60 font-sans">Spacious storefront vehicle parking</p>
+                <p className="font-display font-black text-xs text-white mb-1 uppercase tracking-wider">Easy Parking</p>
+                <p className="text-[11px] text-ngen-cream/80 font-sans">Spacious storefront vehicle parking</p>
               </div>
 
               <div className="p-4 rounded-2xl bg-ngen-darkgreen border border-white/10 text-center text-white">
                 <Sparkles className="w-4 h-4 text-ngen-lime mx-auto mb-2" />
-                <h5 className="font-display font-black text-xs text-white mb-1 uppercase tracking-wider">Free Repotting</h5>
-                <p className="text-[11px] text-ngen-cream/60 font-sans">Complimentary potting with soil</p>
+                <p className="font-display font-black text-xs text-white mb-1 uppercase tracking-wider">Free Repotting</p>
+                <p className="text-[11px] text-ngen-cream/80 font-sans">Complimentary potting with soil</p>
               </div>
 
               <div className="p-4 rounded-2xl bg-ngen-darkgreen border border-white/10 text-center text-white">
                 <Shield className="w-4 h-4 text-emerald-400 mx-auto mb-2" />
-                <h5 className="font-display font-black text-xs text-white mb-1 uppercase tracking-wider">Plant Advice</h5>
-                <p className="text-[11px] text-ngen-cream/60 font-sans">Personalized advice for your light</p>
+                <p className="font-display font-black text-xs text-white mb-1 uppercase tracking-wider">Plant Advice</p>
+                <p className="text-[11px] text-ngen-cream/80 font-sans">Personalized advice for your light</p>
               </div>
             </div>
 
