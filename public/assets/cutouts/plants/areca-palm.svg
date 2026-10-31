@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 650" fill="none">
+  <defs>
+    <linearGradient id="a-frond-dark" x1="100" y1="80" x2="500" y2="550" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#356E44"/>
+      <stop offset="100%" stop-color="#193B23"/>
+    </linearGradient>
+    <linearGradient id="a-frond-bright" x1="150" y1="40" x2="450" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#68AD74"/>
+      <stop offset="55%" stop-color="#3F7E4E"/>
+      <stop offset="100%" stop-color="#234F2E"/>
+    </linearGradient>
+    <filter id="a-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#0D1F13" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Multi-Cane Palm Stems -->
+  <g stroke="#3F784C" stroke-linecap="round" fill="none">
+    <path d="M292 608 C275 460, 205 290, 95 155" stroke-width="8"/>
+    <path d="M308 608 C325 460, 395 290, 505 155" stroke-width="8"/>
+    <path d="M285 608 C255 485, 165 365, 58 285" stroke-width="7"/>
+    <path d="M315 608 C345 485, 435 365, 542 285" stroke-width="7"/>
+    <path d="M300 608 C300 440, 298 240, 298 48" stroke-width="9"/>
+  </g>
+
+  <!-- Left Lower Arching Frond -->
+  <g filter="url(#a-shadow)" fill="url(#a-frond-dark)">
+    <path d="M245 455 C195 435, 155 445, 125 465 C158 430, 198 422, 245 442 Z"/>
+    <path d="M215 410 C162 388, 118 398, 85 422 C122 382, 168 375, 218 396 Z"/>
+    <path d="M182 368 C128 345, 82 355, 48 380 C88 338, 135 332, 186 354 Z"/>
+    <path d="M145 330 C95 308, 52 318, 22 342 C58 302, 102 296, 150 318 Z"/>
+  </g>
+
+  <!-- Right Lower Arching Frond -->
+  <g filter="url(#a-shadow)" fill="url(#a-frond-dark)">
+    <path d="M355 455 C405 435, 445 445, 475 465 C442 430, 402 422, 355 442 Z"/>
+    <path d="M385 410 C438 388, 482 398, 515 422 C478 382, 432 375, 382 396 Z"/>
+    <path d="M418 368 C472 345, 518 355, 552 380 C512 338, 465 332, 414 354 Z"/>
+    <path d="M455 330 C505 308, 548 318, 578 342 C542 302, 498 296, 450 318 Z"/>
+  </g>
+
+  <!-- Left Upper Feather Frond -->
+  <g filter="url(#a-shadow)" fill="url(#a-frond-bright)">
+    <path d="M252 375 C198 345, 152 352, 115 375 C155 335, 202 330, 255 360 Z"/>
+    <path d="M225 320 C168 288, 118 295, 78 320 C122 278, 175 272, 230 305 Z"/>
+    <path d="M195 268 C138 235, 88 242, 48 268 C92 225, 145 218, 200 252 Z"/>
+    <path d="M162 218 C108 188, 62 195, 25 218 C68 178, 118 172, 168 204 Z"/>
+    <path d="M128 175 C82 148, 42 155, 12 175 C48 140, 92 135, 134 162 Z"/>
+  </g>
+
+  <!-- Right Upper Feather Frond -->
+  <g filter="url(#a-shadow)" fill="url(#a-frond-bright)">
+    <path d="M348 375 C402 345, 448 352, 485 375 C445 335, 398 330, 345 360 Z"/>
+    <path d="M375 320 C432 288, 482 295, 522 320 C478 278, 425 272, 370 305 Z"/>
+    <path d="M405 268 C462 235, 512 242, 552 268 C508 225, 455 218, 400 252 Z"/>
+    <path d="M438 218 C492 188, 538 195, 575 218 C532 178, 482 172, 432 204 Z"/>
+    <path d="M472 175 C518 148, 558 155, 588 175 C552 140, 508 135, 466 162 Z"/>
+  </g>
+
+  <!-- Center Vertical Feather Frond -->
+  <g filter="url(#a-shadow)" fill="url(#a-frond-bright)">
+    <path d="M298 360 C248 315, 202 305, 162 315 C208 285, 255 292, 298 342 Z"/>
+    <path d="M298 360 C348 315, 394 305, 434 315 C388 285, 341 292, 298 342 Z"/>
+    <path d="M298 295 C245 248, 195 238, 152 248 C202 218, 252 225, 298 278 Z"/>
+    <path d="M298 295 C351 248, 401 238, 444 248 C394 218, 344 225, 298 278 Z"/>
+    <path d="M298 230 C248 182, 198 172, 158 182 C205 152, 255 158, 298 212 Z"/>
+    <path d="M298 230 C348 182, 398 172, 438 182 C391 152, 341 158, 298 212 Z"/>
+    <path d="M298 168 C255 122, 212 112, 175 122 C218 95, 262 102, 298 150 Z"/>
+    <path d="M298 168 C341 122, 384 112, 421 122 C378 95, 334 102, 298 150 Z"/>
+    <path d="M298 110 C265 72, 232 62, 202 70 C238 48, 272 55, 298 94 Z"/>
+    <path d="M298 110 C331 72, 364 62, 394 70 C358 48, 324 55, 298 94 Z"/>
+  </g>
+</svg>

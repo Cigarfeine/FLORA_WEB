@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 440" fill="none">
+  <defs>
+    <linearGradient id="jg-body" x1="90" y1="60" x2="410" y2="390" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#D5D7D4"/>
+      <stop offset="35%" stop-color="#B5B8B4"/>
+      <stop offset="75%" stop-color="#8A8E8A"/>
+      <stop offset="100%" stop-color="#646864"/>
+    </linearGradient>
+    <linearGradient id="jg-rim" x1="95" y1="45" x2="405" y2="85" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E2E4E1"/>
+      <stop offset="50%" stop-color="#C0C3BF"/>
+      <stop offset="100%" stop-color="#7B7F7B"/>
+    </linearGradient>
+    <linearGradient id="jg-soil" x1="120" y1="55" x2="380" y2="85" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#261C15"/>
+      <stop offset="50%" stop-color="#38291F"/>
+      <stop offset="100%" stop-color="#1E1510"/>
+    </linearGradient>
+    <filter id="jg-shadow" x="-15%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#111613" flood-opacity="0.32"/>
+    </filter>
+  </defs>
+
+  <!-- Ground Contact Shadow -->
+  <ellipse cx="250" cy="402" rx="135" ry="18" fill="#111613" opacity="0.28"/>
+
+  <!-- Main Ribbed Urn Body -->
+  <g filter="url(#jg-shadow)">
+    <path d="M105 68 C92 185, 118 320, 152 388 C162 402, 338 402, 348 388 C382 320, 408 185, 395 68 Z" fill="url(#jg-body)"/>
+
+    <!-- Horizontal Architectural Ribs -->
+    <g stroke="#F0F2EF" stroke-width="1.5" opacity="0.38">
+      <path d="M102 105 Q250 122 398 105"/>
+      <path d="M101 138 Q250 155 399 138"/>
+      <path d="M103 171 Q250 188 397 171"/>
+      <path d="M106 204 Q250 221 394 204"/>
+      <path d="M111 237 Q250 254 389 237"/>
+      <path d="M117 270 Q250 287 383 270"/>
+      <path d="M125 303 Q250 320 375 303"/>
+      <path d="M134 336 Q250 352 366 336"/>
+      <path d="M144 368 Q250 382 356 368"/>
+    </g>
+    <g stroke="#525652" stroke-width="2" opacity="0.35">
+      <path d="M102 108 Q250 125 398 108"/>
+      <path d="M101 141 Q250 158 399 141"/>
+      <path d="M103 174 Q250 191 397 174"/>
+      <path d="M106 207 Q250 224 394 207"/>
+      <path d="M111 240 Q250 257 389 240"/>
+      <path d="M117 273 Q250 290 383 273"/>
+      <path d="M125 306 Q250 323 375 306"/>
+      <path d="M134 339 Q250 355 366 339"/>
+    </g>
+
+    <!-- Upper Rim Lip & Organic Potting Soil -->
+    <ellipse cx="250" cy="68" rx="146" ry="22" fill="url(#jg-rim)"/>
+    <ellipse cx="250" cy="68" rx="134" ry="16" fill="url(#jg-soil)"/>
+    <!-- Front Rim Highlight so stems sit inside -->
+    <path d="M104 68 A146 22 0 0 0 396 68" stroke="url(#jg-rim)" stroke-width="6" fill="none"/>
+  </g>
+</svg>

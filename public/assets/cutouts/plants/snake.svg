@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 650" fill="none">
+  <defs>
+    <linearGradient id="s-blade-1" x1="300" y1="40" x2="300" y2="610" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3C7349"/>
+      <stop offset="50%" stop-color="#265232"/>
+      <stop offset="100%" stop-color="#16351F"/>
+    </linearGradient>
+    <linearGradient id="s-blade-2" x1="250" y1="60" x2="350" y2="610" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4A8557"/>
+      <stop offset="55%" stop-color="#2E613B"/>
+      <stop offset="100%" stop-color="#1B3E25"/>
+    </linearGradient>
+    <linearGradient id="s-blade-dark" x1="200" y1="100" x2="400" y2="610" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2B5937"/>
+      <stop offset="100%" stop-color="#132C1A"/>
+    </linearGradient>
+    <linearGradient id="s-gold" x1="300" y1="30" x2="300" y2="610" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E5DF78"/>
+      <stop offset="50%" stop-color="#C8C456"/>
+      <stop offset="100%" stop-color="#8F9438"/>
+    </linearGradient>
+    <filter id="s-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#0B1B11" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <!-- Back Far Left Blade -->
+  <g filter="url(#s-shadow)">
+    <path d="M255 605 C225 480, 178 330, 168 165 C198 280, 245 430, 285 605 Z" fill="url(#s-blade-dark)" stroke="url(#s-gold)" stroke-width="5" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Back Far Right Blade -->
+  <g filter="url(#s-shadow)">
+    <path d="M345 605 C375 480, 422 330, 432 155 C402 275, 355 430, 315 605 Z" fill="url(#s-blade-dark)" stroke="url(#s-gold)" stroke-width="5" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Mid Left Sword Blade -->
+  <g filter="url(#s-shadow)">
+    <path d="M265 608 C235 450, 205 275, 222 88 C258 220, 290 410, 308 608 Z" fill="url(#s-blade-1)" stroke="url(#s-gold)" stroke-width="6" stroke-linejoin="round"/>
+    <!-- Variegated Horizontal Bands -->
+    <path d="M232 195 Q245 188 256 196 M236 255 Q252 246 266 256 M242 320 Q260 310 276 322 M250 390 Q270 380 286 392 M258 460 Q278 450 294 462" stroke="#6BA877" stroke-width="4" stroke-linecap="round" opacity="0.45"/>
+  </g>
+
+  <!-- Mid Right Sword Blade -->
+  <g filter="url(#s-shadow)">
+    <path d="M335 608 C365 450, 395 265, 378 78 C342 215, 310 410, 292 608 Z" fill="url(#s-blade-1)" stroke="url(#s-gold)" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M368 185 Q355 178 344 186 M364 245 Q348 236 334 246 M358 310 Q340 300 324 312 M350 380 Q330 370 314 382 M342 450 Q322 440 306 452" stroke="#6BA877" stroke-width="4" stroke-linecap="round" opacity="0.45"/>
+  </g>
+
+  <!-- Center Tall Hero Sword Blade -->
+  <g filter="url(#s-shadow)">
+    <path d="M276 610 C262 430, 268 210, 298 34 C330 210, 338 430, 324 610 Z" fill="url(#s-blade-2)" stroke="url(#s-gold)" stroke-width="6.5" stroke-linejoin="round"/>
+    <path d="M286 140 Q298 132 310 140 M282 200 Q298 190 315 200 M278 265 Q298 254 318 265 M276 330 Q298 318 320 330 M276 395 Q298 384 322 395 M278 465 Q298 454 320 465" stroke="#85C290" stroke-width="4.5" stroke-linecap="round" opacity="0.5"/>
+  </g>
+
+  <!-- Front Short Left Shoot -->
+  <g filter="url(#s-shadow)">
+    <path d="M248 610 C222 510, 198 405, 192 285 C232 375, 265 495, 286 610 Z" fill="url(#s-blade-2)" stroke="url(#s-gold)" stroke-width="5.5" stroke-linejoin="round"/>
+    <path d="M212 365 Q225 358 238 366 M224 425 Q240 416 254 426 M236 485 Q254 476 268 486" stroke="#85C290" stroke-width="3.5" stroke-linecap="round" opacity="0.5"/>
+  </g>
+
+  <!-- Front Short Right Shoot -->
+  <g filter="url(#s-shadow)">
+    <path d="M352 610 C378 515, 402 415, 408 300 C368 385, 335 500, 314 610 Z" fill="url(#s-blade-2)" stroke="url(#s-gold)" stroke-width="5.5" stroke-linejoin="round"/>
+    <path d="M388 375 Q375 368 362 376 M376 435 Q360 426 346 436 M364 495 Q346 486 332 496" stroke="#85C290" stroke-width="3.5" stroke-linecap="round" opacity="0.5"/>
+  </g>
+</svg>

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 440" fill="none">
+  <defs>
+    <linearGradient id="if-body" x1="90" y1="55" x2="410" y2="395" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FBF8F1"/>
+      <stop offset="45%" stop-color="#EFE9DC"/>
+      <stop offset="80%" stop-color="#DDD4C3"/>
+      <stop offset="100%" stop-color="#C4B9A5"/>
+    </linearGradient>
+    <linearGradient id="if-rim" x1="95" y1="45" x2="405" y2="85" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="55%" stop-color="#F2ECE0"/>
+      <stop offset="100%" stop-color="#CFC5B2"/>
+    </linearGradient>
+    <linearGradient id="if-soil" x1="120" y1="55" x2="380" y2="85" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#281D15"/>
+      <stop offset="50%" stop-color="#3A2B20"/>
+      <stop offset="100%" stop-color="#1E150F"/>
+    </linearGradient>
+    <filter id="if-shadow" x="-15%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#171612" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <ellipse cx="250" cy="402" rx="134" ry="18" fill="#171612" opacity="0.24"/>
+
+  <g filter="url(#if-shadow)">
+    <!-- Architectural Fluted Drum Planter -->
+    <path d="M104 68 L116 362 C120 392, 148 402, 250 402 C352 402, 380 392, 384 362 L396 68 Z" fill="url(#if-body)"/>
+
+    <!-- Vertical Architectural Flutes -->
+    <g stroke="#FFFFFF" stroke-width="3" opacity="0.65" stroke-linecap="round">
+      <line x1="126" y1="88" x2="136" y2="375"/>
+      <line x1="150" y1="90" x2="158" y2="382"/>
+      <line x1="174" y1="92" x2="180" y2="388"/>
+      <line x1="198" y1="93" x2="202" y2="392"/>
+      <line x1="224" y1="94" x2="226" y2="394"/>
+      <line x1="250" y1="94" x2="250" y2="395"/>
+      <line x1="276" y1="94" x2="274" y2="394"/>
+      <line x1="302" y1="93" x2="298" y2="392"/>
+      <line x1="326" y1="92" x2="320" y2="388"/>
+      <line x1="350" y1="90" x2="342" y2="382"/>
+      <line x1="374" y1="88" x2="364" y2="375"/>
+    </g>
+    <g stroke="#C2B7A3" stroke-width="1.8" opacity="0.45" stroke-linecap="round">
+      <line x1="138" y1="89" x2="147" y2="378"/>
+      <line x1="162" y1="91" x2="169" y2="385"/>
+      <line x1="186" y1="92" x2="191" y2="390"/>
+      <line x1="211" y1="93" x2="214" y2="393"/>
+      <line x1="237" y1="94" x2="238" y2="394"/>
+      <line x1="263" y1="94" x2="262" y2="394"/>
+      <line x1="289" y1="93" x2="286" y2="393"/>
+      <line x1="314" y1="92" x2="309" y2="390"/>
+      <line x1="338" y1="91" x2="331" y2="385"/>
+      <line x1="362" y1="89" x2="353" y2="378"/>
+    </g>
+
+    <!-- Rim & Soil -->
+    <ellipse cx="250" cy="68" rx="146" ry="22" fill="url(#if-rim)"/>
+    <ellipse cx="250" cy="68" rx="134" ry="16" fill="url(#if-soil)"/>
+    <path d="M104 68 A146 22 0 0 0 396 68" stroke="url(#if-rim)" stroke-width="6" fill="none"/>
+  </g>
+</svg>

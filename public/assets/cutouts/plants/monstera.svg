@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 650" fill="none">
+  <defs>
+    <linearGradient id="m-stem" x1="300" y1="300" x2="300" y2="620" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2D5A3C"/>
+      <stop offset="100%" stop-color="#1B3B26"/>
+    </linearGradient>
+    <linearGradient id="m-leaf-dark" x1="150" y1="80" x2="450" y2="480" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2E5E3E"/>
+      <stop offset="55%" stop-color="#1E462B"/>
+      <stop offset="100%" stop-color="#14301D"/>
+    </linearGradient>
+    <linearGradient id="m-leaf-mid" x1="120" y1="60" x2="480" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#468356"/>
+      <stop offset="50%" stop-color="#2D663E"/>
+      <stop offset="100%" stop-color="#1E472A"/>
+    </linearGradient>
+    <linearGradient id="m-leaf-bright" x1="200" y1="40" x2="420" y2="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#62A36F"/>
+      <stop offset="45%" stop-color="#3D7B4E"/>
+      <stop offset="100%" stop-color="#255433"/>
+    </linearGradient>
+    <filter id="m-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#0D1F14" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <!-- Back Layer Stems -->
+  <g stroke="url(#m-stem)" stroke-linecap="round" fill="none">
+    <path d="M298 605 C290 510, 240 410, 175 290" stroke-width="11"/>
+    <path d="M304 605 C315 500, 370 390, 435 265" stroke-width="11"/>
+    <path d="M295 605 C270 530, 195 450, 125 385" stroke-width="9"/>
+    <path d="M308 605 C335 530, 410 450, 480 375" stroke-width="9"/>
+    <path d="M300 605 C300 480, 295 340, 290 195" stroke-width="12"/>
+  </g>
+
+  <!-- Back Left Leaf -->
+  <g filter="url(#m-shadow)">
+    <path d="M125 385 C65 360, 42 295, 68 245 C82 218, 115 215, 142 238 C122 252, 112 268, 118 274 C124 280, 145 262, 165 245 C182 260, 198 282, 208 308 C182 315, 162 325, 165 332 C168 339, 192 332, 215 325 C222 365, 205 408, 172 418 C150 424, 136 405, 125 385 Z" fill="url(#m-leaf-dark)"/>
+    <path d="M195 385 C165 355, 125 315, 78 258" stroke="#3F7850" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  </g>
+
+  <!-- Back Right Leaf -->
+  <g filter="url(#m-shadow)">
+    <path d="M475 375 C535 345, 558 280, 530 230 C515 205, 480 202, 452 228 C472 242, 482 258, 476 264 C470 270, 448 252, 428 235 C410 250, 394 274, 384 300 C410 308, 430 318, 427 325 C424 332, 398 325, 376 318 C368 358, 386 400, 420 410 C444 416, 462 396, 475 375 Z" fill="url(#m-leaf-dark)"/>
+    <path d="M395 378 C430 345, 470 305, 520 245" stroke="#3F7850" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  </g>
+
+  <!-- Mid Left Large Fenestrated Monstera Leaf -->
+  <g filter="url(#m-shadow)">
+    <path d="M185 305 C115 275, 82 195, 108 128 C122 92, 158 78, 194 102 C168 125, 154 148, 160 155 C166 162, 192 138, 216 115 C228 125, 238 138, 246 152 C215 172, 198 194, 204 202 C210 210, 235 190, 258 172 C266 190, 272 210, 274 230 C242 242, 222 258, 226 266 C230 274, 254 262, 275 252 C275 292, 252 332, 218 338 C200 340, 192 322, 185 305 Z" fill="url(#m-leaf-mid)"/>
+    <!-- Fenestration Holes -->
+    <ellipse cx="178" cy="215" rx="8" ry="15" transform="rotate(-28 178 215)" fill="#1D4428" opacity="0.45"/>
+    <path d="M235 312 C205 260, 168 198, 122 122" stroke="#68A977" stroke-width="3" stroke-linecap="round" opacity="0.75"/>
+    <path d="M192 240 L142 225 M210 270 L160 262 M170 198 L128 178" stroke="#68A977" stroke-width="1.8" stroke-linecap="round" opacity="0.55"/>
+  </g>
+
+  <!-- Mid Right Large Fenestrated Monstera Leaf -->
+  <g filter="url(#m-shadow)">
+    <path d="M425 285 C495 252, 528 172, 500 105 C485 70, 448 58, 412 82 C438 105, 452 128, 446 135 C440 142, 414 118, 390 95 C378 105, 368 118, 360 132 C390 152, 408 174, 402 182 C396 190, 370 170, 348 152 C340 170, 334 190, 332 210 C364 222, 384 238, 380 246 C376 254, 352 242, 330 232 C330 272, 354 312, 388 318 C406 320, 416 302, 425 285 Z" fill="url(#m-leaf-mid)"/>
+    <path d="M372 292 C402 240, 438 178, 485 102" stroke="#68A977" stroke-width="3" stroke-linecap="round" opacity="0.75"/>
+    <path d="M415 220 L465 205 M396 250 L446 242 M436 178 L478 158" stroke="#68A977" stroke-width="1.8" stroke-linecap="round" opacity="0.55"/>
+  </g>
+
+  <!-- Center Crown Hero Monstera Leaf -->
+  <g filter="url(#m-shadow)">
+    <path d="M300 285 C278 285, 265 262, 265 245 C230 248, 198 228, 185 195 C218 195, 245 198, 248 190 C251 182, 215 172, 180 158 C176 138, 182 115, 196 96 C232 112, 258 126, 262 118 C266 110, 236 90, 210 70 C232 45, 266 32, 300 28 C334 32, 368 45, 390 70 C364 90, 334 110, 338 118 C342 126, 368 112, 404 96 C418 115, 424 138, 420 158 C385 172, 349 182, 352 190 C355 198, 382 195, 415 195 C402 228, 370 248, 335 245 C335 262, 322 285, 300 285 Z" fill="url(#m-leaf-bright)"/>
+    <path d="M300 272 L300 38" stroke="#8BD19A" stroke-width="3.5" stroke-linecap="round" opacity="0.85"/>
+    <path d="M300 215 L235 195 M300 165 L225 138 M300 115 L245 85 M300 215 L365 195 M300 165 L375 138 M300 115 L355 85" stroke="#8BD19A" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  </g>
+
+  <!-- Foreground Lower Heart Leaf -->
+  <g filter="url(#m-shadow)">
+    <path d="M298 445 C265 445, 225 415, 218 368 C212 328, 242 298, 275 312 C288 318, 295 332, 298 342 C301 332, 308 318, 321 312 C354 298, 384 328, 378 368 C371 415, 331 445, 298 445 Z" fill="url(#m-leaf-bright)"/>
+    <path d="M298 338 L298 435" stroke="#8BD19A" stroke-width="2.5" stroke-linecap="round" opacity="0.75"/>
+    <path d="M298 375 L252 355 M298 402 L262 388 M298 375 L344 355 M298 402 L334 388" stroke="#8BD19A" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
+  </g>
+</svg>

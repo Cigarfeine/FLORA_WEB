@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 440" fill="none">
+  <defs>
+    <linearGradient id="cb-body" x1="85" y1="65" x2="415" y2="395" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4A4E4B"/>
+      <stop offset="40%" stop-color="#323633"/>
+      <stop offset="80%" stop-color="#222523"/>
+      <stop offset="100%" stop-color="#151716"/>
+    </linearGradient>
+    <linearGradient id="cb-rim" x1="90" y1="55" x2="410" y2="95" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#5B605C"/>
+      <stop offset="50%" stop-color="#3B3F3C"/>
+      <stop offset="100%" stop-color="#222523"/>
+    </linearGradient>
+    <linearGradient id="cb-stand" x1="120" y1="340" x2="380" y2="415" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#8C623E"/>
+      <stop offset="100%" stop-color="#5E3E22"/>
+    </linearGradient>
+    <linearGradient id="cb-soil" x1="120" y1="55" x2="380" y2="85" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#231912"/>
+      <stop offset="50%" stop-color="#34261B"/>
+      <stop offset="100%" stop-color="#19120D"/>
+    </linearGradient>
+    <filter id="cb-shadow" x="-15%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#0B0D0C" flood-opacity="0.36"/>
+    </filter>
+  </defs>
+
+  <ellipse cx="250" cy="404" rx="142" ry="18" fill="#0B0D0C" opacity="0.32"/>
+
+  <g filter="url(#cb-shadow)">
+    <!-- Teak Wood Architectural Base Legs -->
+    <path d="M135 345 L118 402 L138 402 L156 355 Z" fill="url(#cb-stand)"/>
+    <path d="M365 345 L382 402 L362 402 L344 355 Z" fill="url(#cb-stand)"/>
+    <path d="M242 355 L242 404 L258 404 L258 355 Z" fill="url(#cb-stand)"/>
+
+    <!-- Matte Basalt Bowl Basin -->
+    <path d="M92 72 C88 225, 132 345, 185 368 C215 380, 285 380, 315 368 C368 345, 412 225, 408 72 Z" fill="url(#cb-body)"/>
+
+    <!-- Subtle Concrete Seam & Rim -->
+    <path d="M98 145 Q250 165 402 145" stroke="#636864" stroke-width="1.5" opacity="0.35"/>
+    <ellipse cx="250" cy="72" rx="158" ry="22" fill="url(#cb-rim)"/>
+    <ellipse cx="250" cy="72" rx="145" ry="16" fill="url(#cb-soil)"/>
+    <path d="M92 72 A158 22 0 0 0 408 72" stroke="url(#cb-rim)" stroke-width="6" fill="none"/>
+  </g>
+</svg>
