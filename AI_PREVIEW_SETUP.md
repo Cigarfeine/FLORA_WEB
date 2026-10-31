@@ -10,6 +10,7 @@ Set these environment variables in the API deployment:
 
 - `OPENAI_API_KEY`: your secret OpenAI API key. Keep this server-side only.
 - `ALLOWED_ORIGINS`: comma-separated exact origins permitted to call the API, for example `https://cigarfeine.github.io,http://localhost:5173`.
+- `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`: an Upstash Redis REST database used to enforce a maximum of five preview requests per client IP per 60-second window. The endpoint stays disabled unless this protection is configured.
 
 The handler uses the OpenAI Images edit endpoint and the `gpt-image-2.5-sunburst` model. The room image and two catalogue image URLs are sent as visual references. AI generation incurs API usage charges.
 
@@ -29,6 +30,6 @@ Run the frontend with `npm run dev`. Add `http://localhost:5173` to `ALLOWED_ORI
 
 ## 4. Production safeguards
 
-Before enabling this endpoint for public traffic, configure provider-side rate limiting or an application rate limiter, usage budgets, and monitoring. CORS is a browser access control and is not an API abuse-prevention mechanism. Consider adding a CAPTCHA/Turnstile challenge if anonymous public access is enabled.
+The endpoint requires Upstash Redis rate limiting and permits up to five requests per IP in a rolling inactivity window of 60 seconds. Also configure provider-side usage budgets and monitoring. CORS is a browser access control and is not an API abuse-prevention mechanism; consider adding a CAPTCHA/Turnstile challenge if anonymous public access is enabled.
 
 Uploaded room images are resized in the browser and are only sent to the AI endpoint when the visitor explicitly selects **Generate AI preview**. The function does not persist uploaded images or generated results. Do not log request bodies.
