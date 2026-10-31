@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Check, Layers, SunMedium, Droplets } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { Product } from '../types';
+import { RoomPlantPreview } from './RoomPlantPreview';
 
-interface PlantOption {
+export interface PlantOption {
   id: string;
   name: string;
   price: number;
@@ -14,7 +15,7 @@ interface PlantOption {
   vibe: string;
 }
 
-interface PotOption {
+export interface PotOption {
   id: string;
   name: string;
   colorName: string;
@@ -381,6 +382,8 @@ export const PlantPotCustomizer: React.FC = () => {
           </div>
 
         </div>
+
+        <RoomPlantPreview selectedPlant={selectedPlant} selectedPot={selectedPot} />
 
       </div>
     </section>
