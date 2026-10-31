@@ -1,4 +1,6 @@
+'use client';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import {
   ShoppingBag,
@@ -31,6 +33,10 @@ import {
   ComputedPlantPotBounds,
 } from '../utils/transparentAssets';
 
+// ─────────────────────────────────────────────
+// Types
+// ─────────────────────────────────────────────
+
 interface PlantOption {
   id: string;
   catalogId: string;
@@ -55,6 +61,10 @@ interface PotOption {
   cutoutUrl: string;
   material: string;
 }
+
+// ─────────────────────────────────────────────
+// Data
+// ─────────────────────────────────────────────
 
 const PLANT_OPTIONS: PlantOption[] = [
   {
@@ -90,7 +100,7 @@ const PLANT_OPTIONS: PlantOption[] = [
     image: 'https://images.unsplash.com/photo-1509423350716-97f9360b4e09?auto=format&fit=crop&w=700&q=80',
     cutoutUrl: './assets/cutouts/plants/snake.svg',
     light: 'Tolerates low to bright light',
-    water: 'Every 2-3 weeks',
+    water: 'Every 2–3 weeks',
     vibe: 'Upright gold-margined sword leaves, resilient air purifier',
   },
   {
@@ -189,13 +199,62 @@ const DEFAULT_STUDIO_TRANSFORM: PlacementTransform = {
 
 type DragInteractionMode = 'none' | 'move' | 'scale' | 'rotate';
 
+// ─────────────────────────────────────────────
+// Framer Motion Variants
+// ─────────────────────────────────────────────
+
+const containerVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.07, delayChildren: 0.1 },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 100, damping: 20 },
+  },
+};
+
+const springCfg = { type: 'spring', stiffness: 260, damping: 28 } as const;
+
+// ─────────────────────────────────────────────
+// Micro-components (isolated for perf)
+// ─────────────────────────────────────────────
+
+const BreathingDot = React.memo(() => (
+  <motion.span
+    className="inline-block w-1.5 h-1.5 rounded-full bg-ngen-lime shrink-0"
+    animate={{ scale: [1, 1.65, 1], opacity: [0.9, 0.35, 0.9] }}
+    transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+  />
+));
+BreathingDot.displayName = 'BreathingDot';
+
+const ShimmerBar = React.memo(({ className = '' }: { className?: string }) => (
+  <div className={`relative overflow-hidden rounded-md bg-white/10 ${className}`}>
+    <motion.div
+      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/12 to-transparent"
+      animate={{ x: ['-100%', '200%'] }}
+      transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+    />
+  </div>
+));
+ShimmerBar.displayName = 'ShimmerBar';
+
+// ─────────────────────────────────────────────
+// Main Component
+// ─────────────────────────────────────────────
+
 export const PlantPotCustomizer: React.FC = () => {
   const { addItem } = useCart();
   const [selectedPlant, setSelectedPlant] = useState<PlantOption>(PLANT_OPTIONS[0]);
   const [selectedPot, setSelectedPot] = useState<PotOption>(POT_OPTIONS[0]);
   const [justAdded, setJustAdded] = useState(false);
 
-  // Room Visualization & Canvas State
   const [visualizerMode, setVisualizerMode] = useState<'studio' | 'room'>('studio');
   const [roomImageElement, setRoomImageElement] = useState<HTMLImageElement | null>(null);
   const [roomPhotoDataUrl, setRoomPhotoDataUrl] = useState<string | null>(null);
@@ -204,15 +263,12 @@ export const PlantPotCustomizer: React.FC = () => {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isDraggingFile, setIsDraggingFile] = useState(false);
 
-  // Loaded transparent cutout assets
   const [plantAsset, setPlantAsset] = useState<HTMLImageElement | HTMLCanvasElement | null>(null);
   const [potAsset, setPotAsset] = useState<HTMLImageElement | HTMLCanvasElement | null>(null);
 
-  // Transform state for manual placement
   const [transform, setTransform] = useState<PlacementTransform>(DEFAULT_STUDIO_TRANSFORM);
   const [isCanvasSelected, setIsCanvasSelected] = useState<boolean>(true);
 
-  // AI Realistic Preview State
   const [isGeneratingAi, setIsGeneratingAi] = useState<boolean>(false);
   const [aiPreviewDataUrl, setAiPreviewDataUrl] = useState<string | null>(null);
   const [showAiPreview, setShowAiPreview] = useState<boolean>(false);
@@ -221,7 +277,6 @@ export const PlantPotCustomizer: React.FC = () => {
     text: string;
   } | null>(null);
 
-  // Refs for Canvas & Pointer Dragging
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const lastBoundsRef = useRef<ComputedPlantPotBounds | null>(null);
@@ -241,12 +296,11 @@ export const PlantPotCustomizer: React.FC = () => {
     initialAngle: 0,
   });
 
-  // Pricing & 10% Combo Discount Math
   const rawTotal = selectedPlant.price + selectedPot.price;
   const comboDiscount = Math.round(rawTotal * 0.1);
   const finalComboPrice = rawTotal - comboDiscount;
 
-  // Load Transparent Plant Asset
+  // ── Asset Loading ─────────────────────────
   useEffect(() => {
     let cancelled = false;
     loadTransparentAsset({
@@ -254,15 +308,10 @@ export const PlantPotCustomizer: React.FC = () => {
       cutoutUrl: selectedPlant.cutoutUrl,
       fallbackImageUrl: selectedPlant.image,
       type: 'plant',
-    }).then((asset) => {
-      if (!cancelled) setPlantAsset(asset);
-    });
-    return () => {
-      cancelled = true;
-    };
+    }).then((asset) => { if (!cancelled) setPlantAsset(asset); });
+    return () => { cancelled = true; };
   }, [selectedPlant]);
 
-  // Load Transparent Pot Asset
   useEffect(() => {
     let cancelled = false;
     loadTransparentAsset({
@@ -270,22 +319,15 @@ export const PlantPotCustomizer: React.FC = () => {
       cutoutUrl: selectedPot.cutoutUrl,
       fallbackImageUrl: selectedPot.image,
       type: 'pot',
-    }).then((asset) => {
-      if (!cancelled) setPotAsset(asset);
-    });
-    return () => {
-      cancelled = true;
-    };
+    }).then((asset) => { if (!cancelled) setPotAsset(asset); });
+    return () => { cancelled = true; };
   }, [selectedPot]);
 
-  // Clear outdated AI preview if user changes plant/pot
   useEffect(() => {
-    if (aiPreviewDataUrl) {
-      setShowAiPreview(false);
-    }
+    if (aiPreviewDataUrl) setShowAiPreview(false);
   }, [selectedPlant.id, selectedPot.id]);
 
-  // Redraw Interactive Canvas
+  // ── Canvas Redraw ─────────────────────────
   const redrawCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -302,11 +344,9 @@ export const PlantPotCustomizer: React.FC = () => {
     lastBoundsRef.current = bounds;
   }, [roomImageElement, plantAsset, potAsset, transform, visualizerMode, isCanvasSelected]);
 
-  useEffect(() => {
-    redrawCanvas();
-  }, [redrawCanvas]);
+  useEffect(() => { redrawCanvas(); }, [redrawCanvas]);
 
-  // Helper to load a Data URL into an HTMLImageElement for room background
+  // ── Room Helpers ──────────────────────────
   const applyRoomDataUrl = useCallback(
     (dataUrl: string, label: string, initialPlacement?: PlacementTransform, presetId: string | null = null) => {
       const img = new Image();
@@ -321,100 +361,68 @@ export const PlantPotCustomizer: React.FC = () => {
         setShowAiPreview(false);
         setAiStatusMessage(null);
         setIsCanvasSelected(true);
-        if (initialPlacement) {
-          setTransform(initialPlacement);
-        } else {
-          setTransform({
-            x: 0.52,
-            y: 0.82,
-            scale: 0.95,
-            rotation: 0,
-            flipX: false,
-            shadowIntensity: 0.65,
-          });
-        }
+        setTransform(initialPlacement ?? { x: 0.52, y: 0.82, scale: 0.95, rotation: 0, flipX: false, shadowIntensity: 0.65 });
       };
-      img.onerror = () => {
-        setUploadError('Could not decode the selected image file. Please try another JPG, PNG, or WebP photo.');
-      };
+      img.onerror = () => setUploadError('Could not decode image. Please try another JPG, PNG, or WebP photo.');
       img.src = dataUrl;
     },
     []
   );
 
-  // Handle customer file upload (JPG, PNG, WebP)
   const processUploadedFile = (file: File) => {
     setUploadError(null);
-    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!validTypes.includes(file.type)) {
-      setUploadError('Unsupported file format. Please upload a JPG, PNG, or WebP room photograph.');
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      setUploadError('Unsupported format. Please upload JPG, PNG, or WebP.');
       return;
     }
     if (file.size > 10 * 1024 * 1024) {
-      setUploadError('Photograph exceeds 10 MB. Please choose a smaller room image.');
+      setUploadError('File exceeds 10 MB. Please choose a smaller image.');
       return;
     }
-
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === 'string') {
-        // Normalize large uploads to max 1600px edge so canvas & API stay fast and within limits
-        const tempImg = new Image();
-        tempImg.onload = () => {
+        const tmpImg = new Image();
+        tmpImg.onload = () => {
           const maxEdge = 1600;
-          let targetW = tempImg.naturalWidth || 1280;
-          let targetH = tempImg.naturalHeight || 960;
-          if (targetW > maxEdge || targetH > maxEdge) {
-            if (targetW > targetH) {
-              targetH = Math.round((targetH * maxEdge) / targetW);
-              targetW = maxEdge;
-            } else {
-              targetW = Math.round((targetW * maxEdge) / targetH);
-              targetH = maxEdge;
-            }
+          let w = tmpImg.naturalWidth || 1280;
+          let h = tmpImg.naturalHeight || 960;
+          if (w > maxEdge || h > maxEdge) {
+            if (w > h) { h = Math.round((h * maxEdge) / w); w = maxEdge; }
+            else { w = Math.round((w * maxEdge) / h); h = maxEdge; }
           }
-          const normCanvas = document.createElement('canvas');
-          normCanvas.width = targetW;
-          normCanvas.height = targetH;
-          const nCtx = normCanvas.getContext('2d');
+          const nc = document.createElement('canvas');
+          nc.width = w; nc.height = h;
+          const nCtx = nc.getContext('2d');
           if (nCtx) {
-            nCtx.drawImage(tempImg, 0, 0, targetW, targetH);
-            const normalizedDataUrl = normCanvas.toDataURL('image/jpeg', 0.9);
-            applyRoomDataUrl(normalizedDataUrl, file.name, undefined, null);
+            nCtx.drawImage(tmpImg, 0, 0, w, h);
+            applyRoomDataUrl(nc.toDataURL('image/jpeg', 0.9), file.name, undefined, null);
           } else {
             applyRoomDataUrl(reader.result as string, file.name, undefined, null);
           }
         };
-        tempImg.src = reader.result;
+        tmpImg.src = reader.result;
       }
     };
-    reader.onerror = () => {
-      setUploadError('Failed to read the selected file.');
-    };
+    reader.onerror = () => setUploadError('Failed to read the selected file.');
     reader.readAsDataURL(file);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      processUploadedFile(file);
-    }
+    if (file) processUploadedFile(file);
     e.target.value = '';
   };
 
   const handleLoadSamplePreset = (presetId: string) => {
     const preset = SAMPLE_ROOM_PRESETS.find((p) => p.id === presetId) || SAMPLE_ROOM_PRESETS[0];
-    const dataUrl = generateSampleRoomDataUrl(preset.id);
-    applyRoomDataUrl(dataUrl, preset.name, preset.defaultPlacement, preset.id);
+    applyRoomDataUrl(generateSampleRoomDataUrl(preset.id), preset.name, preset.defaultPlacement, preset.id);
   };
 
   const handleResetPlacement = () => {
     if (visualizerMode === 'room' && activePresetId) {
       const preset = SAMPLE_ROOM_PRESETS.find((p) => p.id === activePresetId);
-      if (preset) {
-        setTransform(preset.defaultPlacement);
-        return;
-      }
+      if (preset) { setTransform(preset.defaultPlacement); return; }
     }
     setTransform(
       visualizerMode === 'room'
@@ -424,27 +432,21 @@ export const PlantPotCustomizer: React.FC = () => {
   };
 
   const handleRemoveRoomPhoto = () => {
-    setRoomImageElement(null);
-    setRoomPhotoDataUrl(null);
-    setRoomSourceLabel('');
-    setActivePresetId(null);
-    setVisualizerMode('studio');
-    setAiPreviewDataUrl(null);
-    setShowAiPreview(false);
-    setAiStatusMessage(null);
+    setRoomImageElement(null); setRoomPhotoDataUrl(null);
+    setRoomSourceLabel(''); setActivePresetId(null);
+    setVisualizerMode('studio'); setAiPreviewDataUrl(null);
+    setShowAiPreview(false); setAiStatusMessage(null);
     setTransform(DEFAULT_STUDIO_TRANSFORM);
   };
 
-  // Pointer / Touch Coordinate Conversion & Hit Testing on Canvas
+  // ── Canvas Pointer ────────────────────────
   const getCanvasPoint = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
     return {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY,
+      x: (e.clientX - rect.left) * (canvas.width / rect.width),
+      y: (e.clientY - rect.top) * (canvas.height / rect.height),
     };
   };
 
@@ -452,78 +454,34 @@ export const PlantPotCustomizer: React.FC = () => {
     const canvas = canvasRef.current;
     const bounds = lastBoundsRef.current;
     if (!canvas || !bounds) return;
-
-    if (showAiPreview) {
-      setShowAiPreview(false);
-    }
-
+    if (showAiPreview) setShowAiPreview(false);
     const pt = getCanvasPoint(e);
 
-    // 1. Check Rotate Handle Hit (Top Center Circle)
     const distRotate = Math.hypot(pt.x - bounds.rotateHandleX, pt.y - bounds.rotateHandleY);
     if (visualizerMode === 'room' && distRotate <= 24) {
       e.currentTarget.setPointerCapture(e.pointerId);
       setIsCanvasSelected(true);
-      const startAngle = Math.atan2(pt.y - bounds.centerY, pt.x - bounds.centerX);
-      dragStateRef.current = {
-        mode: 'rotate',
-        startPointerX: pt.x,
-        startPointerY: pt.y,
-        initialTransform: { ...transform },
-        initialDistance: 100,
-        initialAngle: startAngle,
-      };
+      dragStateRef.current = { mode: 'rotate', startPointerX: pt.x, startPointerY: pt.y, initialTransform: { ...transform }, initialDistance: 100, initialAngle: Math.atan2(pt.y - bounds.centerY, pt.x - bounds.centerX) };
       return;
     }
 
-    // 2. Check Scale Handle Hit (Bottom Right Circle)
     const distScale = Math.hypot(pt.x - bounds.scaleHandleX, pt.y - bounds.scaleHandleY);
     if (visualizerMode === 'room' && distScale <= 24) {
       e.currentTarget.setPointerCapture(e.pointerId);
       setIsCanvasSelected(true);
-      const startDist = Math.max(20, Math.hypot(pt.x - bounds.centerX, pt.y - bounds.centerY));
-      dragStateRef.current = {
-        mode: 'scale',
-        startPointerX: pt.x,
-        startPointerY: pt.y,
-        initialTransform: { ...transform },
-        initialDistance: startDist,
-        initialAngle: 0,
-      };
+      dragStateRef.current = { mode: 'scale', startPointerX: pt.x, startPointerY: pt.y, initialTransform: { ...transform }, initialDistance: Math.max(20, Math.hypot(pt.x - bounds.centerX, pt.y - bounds.centerY)), initialAngle: 0 };
       return;
     }
 
-    // 3. Check Plant+Pot Body Hit (or allow direct placement anywhere in room mode)
-    const dx = pt.x - bounds.centerX;
-    const dy = pt.y - bounds.centerY;
-    const insideBody =
-      Math.abs(dx) <= bounds.totalWidth / 2 + 24 && Math.abs(dy) <= bounds.totalHeight / 2 + 24;
-
+    const insideBody = Math.abs(pt.x - bounds.centerX) <= bounds.totalWidth / 2 + 24 && Math.abs(pt.y - bounds.centerY) <= bounds.totalHeight / 2 + 24;
     if (insideBody || visualizerMode === 'room') {
       e.currentTarget.setPointerCapture(e.pointerId);
       setIsCanvasSelected(true);
-
-      // If user clicked far away from the plant in room mode, jump plant base there and start dragging
       const nextTransform = insideBody
         ? { ...transform }
-        : {
-            ...transform,
-            x: Math.max(0.1, Math.min(0.9, pt.x / canvas.width)),
-            y: Math.max(0.2, Math.min(0.95, (pt.y + bounds.totalHeight * 0.25) / canvas.height)),
-          };
-
-      if (!insideBody) {
-        setTransform(nextTransform);
-      }
-
-      dragStateRef.current = {
-        mode: 'move',
-        startPointerX: pt.x,
-        startPointerY: pt.y,
-        initialTransform: nextTransform,
-        initialDistance: 100,
-        initialAngle: 0,
-      };
+        : { ...transform, x: Math.max(0.1, Math.min(0.9, pt.x / canvas.width)), y: Math.max(0.2, Math.min(0.95, (pt.y + bounds.totalHeight * 0.25) / canvas.height)) };
+      if (!insideBody) setTransform(nextTransform);
+      dragStateRef.current = { mode: 'move', startPointerX: pt.x, startPointerY: pt.y, initialTransform: nextTransform, initialDistance: 100, initialAngle: 0 };
     } else {
       setIsCanvasSelected(false);
     }
@@ -535,179 +493,98 @@ export const PlantPotCustomizer: React.FC = () => {
     const canvas = canvasRef.current;
     const bounds = lastBoundsRef.current;
     if (!canvas || !bounds) return;
-
     const pt = getCanvasPoint(e);
 
     if (state.mode === 'move') {
-      const deltaX = (pt.x - state.startPointerX) / canvas.width;
-      const deltaY = (pt.y - state.startPointerY) / canvas.height;
       setTransform((prev) => ({
         ...prev,
-        x: Math.max(0.08, Math.min(0.92, state.initialTransform.x + deltaX)),
-        y: Math.max(0.22, Math.min(0.96, state.initialTransform.y + deltaY)),
+        x: Math.max(0.08, Math.min(0.92, state.initialTransform.x + (pt.x - state.startPointerX) / canvas.width)),
+        y: Math.max(0.22, Math.min(0.96, state.initialTransform.y + (pt.y - state.startPointerY) / canvas.height)),
       }));
     } else if (state.mode === 'scale') {
-      const currentDist = Math.max(20, Math.hypot(pt.x - bounds.centerX, pt.y - bounds.centerY));
-      const ratio = currentDist / state.initialDistance;
-      const nextScale = Math.max(0.4, Math.min(1.85, state.initialTransform.scale * ratio));
-      setTransform((prev) => ({
-        ...prev,
-        scale: Number(nextScale.toFixed(2)),
-      }));
+      const ratio = Math.max(20, Math.hypot(pt.x - bounds.centerX, pt.y - bounds.centerY)) / state.initialDistance;
+      setTransform((prev) => ({ ...prev, scale: Number(Math.max(0.4, Math.min(1.85, state.initialTransform.scale * ratio)).toFixed(2)) }));
     } else if (state.mode === 'rotate') {
-      const currentAngle = Math.atan2(pt.y - bounds.centerY, pt.x - bounds.centerX);
-      const deltaDeg = ((currentAngle - state.initialAngle) * 180) / Math.PI;
-      const nextRot = Math.max(-45, Math.min(45, Math.round(state.initialTransform.rotation + deltaDeg)));
-      setTransform((prev) => ({
-        ...prev,
-        rotation: nextRot,
-      }));
+      const deltaDeg = ((Math.atan2(pt.y - bounds.centerY, pt.x - bounds.centerX) - state.initialAngle) * 180) / Math.PI;
+      setTransform((prev) => ({ ...prev, rotation: Math.max(-45, Math.min(45, Math.round(state.initialTransform.rotation + deltaDeg))) }));
     }
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (dragStateRef.current.mode !== 'none') {
       dragStateRef.current.mode = 'none';
-      try {
-        e.currentTarget.releasePointerCapture(e.pointerId);
-      } catch {
-        // Ignore if pointer capture already released
-      }
+      try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* noop */ }
     }
   };
 
-  // Export clean high-resolution composition Data URL (without gizmo handles)
+  // ── Export ────────────────────────────────
   const exportCleanCompositionDataUrl = useCallback(
     (mimeType: 'image/png' | 'image/jpeg' = 'image/png', quality = 0.92): string => {
-      const exportCanvas = document.createElement('canvas');
-      exportCanvas.width = 1280;
-      exportCanvas.height = 960;
-      renderRoomComposition({
-        canvas: exportCanvas,
-        roomImage: roomImageElement,
-        plantAsset,
-        potAsset,
-        transform,
-        showHandles: false,
-        isSelected: false,
-        studioBackground: visualizerMode === 'studio' || !roomImageElement,
-      });
-      return exportCanvas.toDataURL(mimeType, quality);
+      const ec = document.createElement('canvas');
+      ec.width = 1280; ec.height = 960;
+      renderRoomComposition({ canvas: ec, roomImage: roomImageElement, plantAsset, potAsset, transform, showHandles: false, isSelected: false, studioBackground: visualizerMode === 'studio' || !roomImageElement });
+      return ec.toDataURL(mimeType, quality);
     },
     [roomImageElement, plantAsset, potAsset, transform, visualizerMode]
   );
 
-  // Download resulting composition as PNG
   const handleDownloadComposition = () => {
     const dataUrl = showAiPreview && aiPreviewDataUrl ? aiPreviewDataUrl : exportCleanCompositionDataUrl('image/png');
     const link = document.createElement('a');
-    const modeSlug = showAiPreview && aiPreviewDataUrl ? 'ai-preview' : 'room-composition';
-    link.download = `flora-${selectedPlant.id}-${selectedPot.id}-${modeSlug}.png`;
+    link.download = `flora-${selectedPlant.id}-${selectedPot.id}-${showAiPreview && aiPreviewDataUrl ? 'ai-preview' : 'room-composition'}.png`;
     link.href = dataUrl;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  // Optional AI Realistic Room Visualization via Serverless Endpoint
+  // ── AI Preview ────────────────────────────
   const handleGenerateAiPreview = async () => {
     if (!roomPhotoDataUrl || !roomImageElement) {
-      // Automatically load the default Kerala sample room if user clicks AI preview before uploading
       const defaultPreset = SAMPLE_ROOM_PRESETS[0];
-      const sampleUrl = generateSampleRoomDataUrl(defaultPreset.id);
-      applyRoomDataUrl(sampleUrl, defaultPreset.name, defaultPreset.defaultPlacement, defaultPreset.id);
-      setAiStatusMessage({
-        type: 'info',
-        text: 'Loaded Kochi Teak Living Lounge sample room. Click "Generate Realistic Preview" again or upload your own room photo.',
-      });
+      applyRoomDataUrl(generateSampleRoomDataUrl(defaultPreset.id), defaultPreset.name, defaultPreset.defaultPlacement, defaultPreset.id);
+      setAiStatusMessage({ type: 'info', text: 'Sample room loaded. Click "AI Render" again or upload your own room photo.' });
       return;
     }
-
     setIsGeneratingAi(true);
-    setAiStatusMessage({
-      type: 'info',
-      text: 'Synthesizing realistic room lighting, perspective, and contact shadows via OpenAI GPT Image...',
-    });
-
+    setAiStatusMessage({ type: 'info', text: 'Synthesising room lighting, perspective & contact shadows...' });
     try {
       const compositeGuideDataUrl = exportCleanCompositionDataUrl('image/jpeg', 0.88);
       const apiBase = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') || '';
-      const endpoint = `${apiBase}/api/visualize-room`;
-
-      const response = await fetch(endpoint, {
+      const response = await fetch(`${apiBase}/api/visualize-room`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           roomImageDataUrl: roomPhotoDataUrl,
           compositeGuideDataUrl,
-          plant: {
-            id: selectedPlant.id,
-            name: selectedPlant.name,
-            scientificName: selectedPlant.scientificName,
-            light: selectedPlant.light,
-          },
-          pot: {
-            id: selectedPot.id,
-            name: selectedPot.name,
-            color: selectedPot.colorName,
-            material: selectedPot.material,
-          },
-          placement: {
-            x: transform.x,
-            y: transform.y,
-            scale: transform.scale,
-            rotation: transform.rotation,
-            flipX: transform.flipX,
-          },
+          plant: { id: selectedPlant.id, name: selectedPlant.name, scientificName: selectedPlant.scientificName, light: selectedPlant.light },
+          pot: { id: selectedPot.id, name: selectedPot.name, color: selectedPot.colorName, material: selectedPot.material },
+          placement: { x: transform.x, y: transform.y, scale: transform.scale, rotation: transform.rotation, flipX: transform.flipX },
         }),
       });
-
       const contentType = response.headers.get('content-type') || '';
       if (!contentType.includes('application/json')) {
-        setAiStatusMessage({
-          type: 'warning',
-          text: 'AI Visualization backend is not connected on this static host yet. Set VITE_API_BASE_URL to your Vercel deployment. Your interactive Canvas room compositor and PNG download remain 100% active.',
-        });
+        setAiStatusMessage({ type: 'warning', text: 'AI backend not connected on this host. Set VITE_API_BASE_URL to your deployment. Canvas compositor and PNG export remain fully active.' });
         setIsGeneratingAi(false);
         return;
       }
-
-      const data = (await response.json()) as {
-        imageDataUrl?: string;
-        error?: string;
-        code?: string;
-      };
-
+      const data = (await response.json()) as { imageDataUrl?: string; error?: string };
       if (!response.ok || !data.imageDataUrl) {
-        setAiStatusMessage({
-          type: 'warning',
-          text:
-            data.error ||
-            'AI Realistic Preview is currently unavailable. You can continue positioning and downloading your manual Canvas room composition.',
-        });
+        setAiStatusMessage({ type: 'warning', text: data.error || 'AI preview unavailable. Continue with manual canvas placement and download.' });
         setIsGeneratingAi(false);
         return;
       }
-
       setAiPreviewDataUrl(data.imageDataUrl);
       setShowAiPreview(true);
-      setAiStatusMessage({
-        type: 'success',
-        text: 'Realistic AI Room Preview generated. Toggle between AI View and Manual Canvas Editor anytime.',
-      });
+      setAiStatusMessage({ type: 'success', text: 'Realistic preview rendered. Toggle between AI view and canvas editor anytime.' });
     } catch {
-      setAiStatusMessage({
-        type: 'warning',
-        text: 'AI Visualization API is unreachable from this environment. Manual Canvas placement, scaling, rotation, and high-res PNG downloads remain fully active.',
-      });
+      setAiStatusMessage({ type: 'warning', text: 'AI API unreachable. Manual canvas placement, scaling, rotation, and PNG export remain active.' });
     } finally {
       setIsGeneratingAi(false);
     }
   };
 
-  // Preserve Cart & Confetti Integration
+  // ── Cart ──────────────────────────────────
   const handleAddComboToCart = () => {
     const comboProduct: Product = {
       id: `combo-${selectedPlant.id}-${selectedPot.id}`,
@@ -721,593 +598,737 @@ export const PlantPotCustomizer: React.FC = () => {
       inStock: true,
       careLevel: 'Easy',
     };
-
     addItem(comboProduct, selectedPot.colorName);
-
     try {
-      confetti({
-        particleCount: 55,
-        spread: 60,
-        origin: { y: 0.75 },
-        colors: ['#CCE561', '#FF9C94', '#334238', '#FAF2E8'],
-      });
-    } catch {
-      // Ignore confetti errors in headless environments
-    }
-
+      confetti({ particleCount: 55, spread: 60, origin: { y: 0.75 }, colors: ['#CCE561', '#FF9C94', '#334238', '#FAF2E8'] });
+    } catch { /* noop */ }
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1600);
   };
 
-  // Direct WhatsApp Bespoke Inquiry Link
   const handleWhatsAppComboOrder = () => {
-    const placementNote =
-      visualizerMode === 'room'
-        ? ` (Visualized in room: ${roomSourceLabel || 'Custom Room Photo'} at ${Math.round(transform.scale * 100)}% scale)`
-        : '';
-    const message = `Hi Flora! I used the Interactive Room Visualizer to pair the *${selectedPlant.name}* (₹${selectedPlant.price}) with the *${selectedPot.name} - ${selectedPot.colorName}* (₹${selectedPot.price}).\n\n10% Studio Combo Total: *₹${finalComboPrice}* (Save ₹${comboDiscount})${placementNote}.\n\nPlease confirm availability for delivery.`;
+    const placementNote = visualizerMode === 'room'
+      ? ` (Visualised in: ${roomSourceLabel || 'Custom Room Photo'} at ${Math.round(transform.scale * 100)}% scale)`
+      : '';
+    const message = `Hi Flora! I used the Interactive Room Visualizer to pair the *${selectedPlant.name}* (₹${selectedPlant.price}) with the *${selectedPot.name} – ${selectedPot.colorName}* (₹${selectedPot.price}).\n\n10% Studio Combo Total: *₹${finalComboPrice}* (Save ₹${comboDiscount})${placementNote}.\n\nPlease confirm availability for delivery.`;
     window.open(`https://wa.me/919074797254?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
   };
 
+  // ──────────────────────────────────────────
+  // Render
+  // ──────────────────────────────────────────
   return (
     <section
       id="studio"
-      className="py-24 bg-ngen-green text-ngen-cream relative overflow-hidden border-b border-black/10"
+      className="py-20 lg:py-28 bg-ngen-green text-ngen-cream relative overflow-hidden border-b border-black/10"
     >
-      <div className="site-max relative z-10">
-        {/* Studio Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <span className="text-xs sm:text-sm font-mono font-extrabold uppercase tracking-widest text-ngen-lime block mb-3">
-            Interactive Matcher &amp; Room Visualizer Studio
-          </span>
-          <h2 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl tracking-[-0.03em] text-white leading-[1.05] mb-4">
-            Pair Living Flora &amp; Visualize in Your Space
-          </h2>
-          <p className="text-ngen-cream/75 text-sm sm:text-base font-sans max-w-2xl mx-auto leading-relaxed">
-            Select any living plant and sculptural planter from our catalogue, upload a photograph of your room to place and scale your arrangement, and unlock an automatic 10% studio pairing discount.
-          </p>
-        </div>
+      {/* Fixed grain — pointer-none, no scroll repaint */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]"
+        style={{
+          backgroundImage:
+            'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")',
+          backgroundSize: '256px 256px',
+        }}
+      />
 
-        {/* Main Studio Grid: Left Catalogue & Room Upload Controls (7 Cols) | Right Interactive Visualizer & Checkout (5 Cols) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          {/* Left Column (7 Cols) */}
-          <div className="lg:col-span-7 flex flex-col justify-between space-y-7 bg-ngen-darkgreen p-6 sm:p-8 rounded-3xl border border-white/10 text-white">
-            {/* Step 1: Select Plant */}
-            <div>
-              <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-ngen-lime">
-                  Step 1 • Choose Your Plant ({PLANT_OPTIONS.length} Specimens)
+      <div className="site-max relative z-10">
+
+        {/* ── Section heading — left-aligned, asymmetric ── */}
+        <motion.div
+          className="mb-12 lg:mb-16"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+        >
+          <motion.div variants={itemVariants} className="flex items-center gap-2.5 mb-4">
+            <BreathingDot />
+            <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-ngen-lime">
+              Interactive Matcher · Room Visualizer Studio
+            </span>
+          </motion.div>
+
+          <motion.h2
+            variants={itemVariants}
+            className="font-display font-bold text-4xl sm:text-5xl lg:text-[3.25rem] tracking-[-0.03em] text-white leading-[1.06] max-w-xl"
+          >
+            Pair living flora,{' '}
+            <span className="text-ngen-lime/85">place it in your room.</span>
+          </motion.h2>
+
+          <motion.p
+            variants={itemVariants}
+            className="mt-4 text-ngen-cream/55 text-sm font-sans max-w-lg leading-relaxed"
+          >
+            Choose a specimen and planter, upload your room photo, position and scale the arrangement — and claim an automatic 10% studio discount at checkout.
+          </motion.p>
+        </motion.div>
+
+        {/* ── Main asymmetric grid 7 / 5 ── */}
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 items-start"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+        >
+
+          {/* ────────────────────────────────
+              LEFT column — catalogue + upload
+          ──────────────────────────────── */}
+          <motion.div variants={itemVariants} className="lg:col-span-7 flex flex-col gap-4">
+
+            {/* ── Plant selector ── */}
+            <div className="bg-ngen-darkgreen rounded-[1.75rem] border border-white/[0.07] overflow-hidden shadow-[0_20px_48px_-16px_rgba(0,0,0,0.3)]">
+              {/* Header bar */}
+              <div className="px-5 pt-5 pb-3.5 flex flex-wrap items-baseline justify-between gap-2 border-b border-white/[0.06]">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-ngen-lime">
+                  01 — Choose Plant
                 </span>
-                <span className="text-xs font-mono font-bold text-ngen-cream/80 uppercase">
-                  Selected: <strong className="text-white">{selectedPlant.name}</strong>
-                </span>
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={selectedPlant.scientificName}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={springCfg}
+                    className="text-[10px] font-mono italic text-ngen-cream/35"
+                  >
+                    {selectedPlant.scientificName}
+                  </motion.span>
+                </AnimatePresence>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {PLANT_OPTIONS.map((plant) => {
-                  const isSelected = selectedPlant.id === plant.id;
+              <div className="p-4 grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                {PLANT_OPTIONS.map((plant, i) => {
+                  const active = selectedPlant.id === plant.id;
                   return (
-                    <button
+                    <motion.button
                       key={plant.id}
                       type="button"
                       onClick={() => setSelectedPlant(plant)}
-                      className={`p-2.5 rounded-2xl text-left border transition-all duration-200 flex items-center gap-3 cursor-pointer ${
-                        isSelected
-                          ? 'border-ngen-lime bg-white/12 shadow-[0_0_0_1px_rgba(204,229,97,0.4)]'
-                          : 'border-white/10 hover:border-white/25 bg-white/5 hover:bg-white/10'
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ ...springCfg, delay: i * 0.04 }}
+                      whileTap={{ scale: 0.97 }}
+                      className={`relative p-3 rounded-2xl text-left flex items-center gap-3 cursor-pointer border transition-colors duration-150 ${
+                        active
+                          ? 'border-ngen-lime/50 bg-ngen-lime/[0.09] shadow-[inset_0_1px_0_rgba(204,229,97,0.12)]'
+                          : 'border-white/[0.06] bg-white/[0.035] hover:bg-white/[0.07] hover:border-white/[0.15]'
                       }`}
                     >
-                      <div className="w-14 h-14 shrink-0 rounded-xl overflow-hidden bg-[#FAF2E8]/10 p-1.5 flex items-center justify-center relative">
+                      {/* Shared element selection ring */}
+                      {active && (
+                        <motion.span
+                          layoutId="plant-ring"
+                          className="absolute inset-0 rounded-2xl ring-1 ring-ngen-lime/40 pointer-events-none"
+                          transition={springCfg}
+                        />
+                      )}
+                      {/* Thumbnail */}
+                      <div className="w-11 h-11 shrink-0 rounded-xl overflow-hidden bg-white/[0.05] border border-white/[0.05] flex items-center justify-center">
                         <img
                           src={plant.cutoutUrl}
                           alt={plant.name}
-                          onError={(e) => {
-                            e.currentTarget.src = plant.image;
-                          }}
-                          className="w-full h-full object-contain drop-shadow"
+                          onError={(e) => { e.currentTarget.src = plant.image; }}
+                          className="w-full h-full object-contain"
                         />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <span className="text-xs font-bold text-white block truncate">
+                        <span className="text-[11px] font-bold text-white block truncate leading-tight">
                           {plant.name}
                         </span>
-                        <span className="text-[10px] font-mono text-ngen-cream/55 block truncate italic">
-                          {plant.scientificName}
-                        </span>
-                        <span className="text-xs font-mono text-ngen-peach font-bold mt-0.5 block">
-                          ₹{plant.price}
+                        <span className="text-[10px] font-mono text-ngen-peach font-bold mt-1 block">
+                          ₹{plant.price.toLocaleString('en-IN')}
                         </span>
                       </div>
-                    </button>
+                    </motion.button>
                   );
                 })}
               </div>
             </div>
 
-            {/* Step 2: Select Planter Pot */}
-            <div>
-              <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-ngen-lime">
-                  Step 2 • Choose Planter Pot
+            {/* ── Pot selector ── */}
+            <div className="bg-ngen-darkgreen rounded-[1.75rem] border border-white/[0.07] overflow-hidden shadow-[0_20px_48px_-16px_rgba(0,0,0,0.3)]">
+              <div className="px-5 pt-5 pb-3.5 flex flex-wrap items-baseline justify-between gap-2 border-b border-white/[0.06]">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-ngen-lime">
+                  02 — Choose Planter
                 </span>
-                <span className="text-xs font-mono font-bold text-ngen-cream/80 uppercase">
-                  Selected: <strong className="text-white">{selectedPot.name}</strong>
-                </span>
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={selectedPot.material}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={springCfg}
+                    className="text-[10px] font-mono text-ngen-cream/35"
+                  >
+                    {selectedPot.material}
+                  </motion.span>
+                </AnimatePresence>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {POT_OPTIONS.map((pot) => {
-                  const isSelected = selectedPot.id === pot.id;
+              <div className="p-4 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                {POT_OPTIONS.map((pot, i) => {
+                  const active = selectedPot.id === pot.id;
                   return (
-                    <button
+                    <motion.button
                       key={pot.id}
                       type="button"
                       onClick={() => setSelectedPot(pot)}
-                      className={`p-2.5 rounded-2xl text-left border transition-all duration-200 flex flex-col items-center cursor-pointer ${
-                        isSelected
-                          ? 'border-ngen-lime bg-white/12 shadow-[0_0_0_1px_rgba(204,229,97,0.4)]'
-                          : 'border-white/10 hover:border-white/25 bg-white/5 hover:bg-white/10'
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ ...springCfg, delay: i * 0.05 }}
+                      whileTap={{ scale: 0.96 }}
+                      className={`relative p-3 rounded-2xl flex flex-col items-center cursor-pointer border transition-colors duration-150 ${
+                        active
+                          ? 'border-ngen-lime/50 bg-ngen-lime/[0.09] shadow-[inset_0_1px_0_rgba(204,229,97,0.12)]'
+                          : 'border-white/[0.06] bg-white/[0.035] hover:bg-white/[0.07] hover:border-white/[0.15]'
                       }`}
                     >
-                      <div className="w-full aspect-square rounded-xl overflow-hidden mb-2 bg-[#FAF2E8]/10 p-2.5 flex items-center justify-center">
+                      {active && (
+                        <motion.span
+                          layoutId="pot-ring"
+                          className="absolute inset-0 rounded-2xl ring-1 ring-ngen-lime/40 pointer-events-none"
+                          transition={springCfg}
+                        />
+                      )}
+                      <div className="w-full aspect-square rounded-xl overflow-hidden mb-2.5 bg-white/[0.05] border border-white/[0.05] flex items-center justify-center p-2">
                         <img
                           src={pot.cutoutUrl}
                           alt={pot.name}
-                          onError={(e) => {
-                            e.currentTarget.src = pot.image;
-                          }}
-                          className="max-w-full max-h-full object-contain drop-shadow"
+                          onError={(e) => { e.currentTarget.src = pot.image; }}
+                          className="max-w-full max-h-full object-contain"
                         />
                       </div>
                       <div className="flex items-center gap-1.5 mb-0.5">
                         <span
-                          className="w-2.5 h-2.5 rounded-full border border-white/30 shrink-0"
+                          className="w-2 h-2 rounded-full border border-white/20 shrink-0"
                           style={{ backgroundColor: pot.colorHex }}
                         />
-                        <span className="text-[11px] font-bold text-white line-clamp-1">
+                        <span className="text-[10px] font-bold text-white/85 line-clamp-1">
                           {pot.colorName}
                         </span>
                       </div>
-                      <span className="text-[11px] font-mono text-ngen-peach font-bold">
-                        ₹{pot.price}
+                      <span className="text-[10px] font-mono text-ngen-peach font-bold">
+                        ₹{pot.price.toLocaleString('en-IN')}
                       </span>
-                    </button>
+                    </motion.button>
                   );
                 })}
               </div>
             </div>
 
-            {/* Step 3: Room Photograph Upload & Sample Room Bar */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-white/5 border border-white/12 space-y-3.5">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-ngen-lime">
-                  Step 3 • Visualize in Your Room (JPG, PNG, WebP)
+            {/* ── Room upload + sample presets ── */}
+            <div className="bg-ngen-darkgreen rounded-[1.75rem] border border-white/[0.07] overflow-hidden shadow-[0_20px_48px_-16px_rgba(0,0,0,0.3)]">
+              {/* Header */}
+              <div className="px-5 pt-5 pb-3.5 flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.06]">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-ngen-lime">
+                  03 — Visualize in Your Room
                 </span>
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => setVisualizerMode('studio')}
-                    className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-bold uppercase transition-colors cursor-pointer ${
-                      visualizerMode === 'studio'
-                        ? 'bg-ngen-lime text-ngen-charcoal'
-                        : 'bg-white/10 text-ngen-cream/70 hover:text-white'
-                    }`}
-                  >
-                    Studio Cutout
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (roomImageElement) {
-                        setVisualizerMode('room');
-                      } else {
-                        handleLoadSamplePreset(SAMPLE_ROOM_PRESETS[0].id);
-                      }
-                    }}
-                    className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-bold uppercase transition-colors cursor-pointer ${
-                      visualizerMode === 'room'
-                        ? 'bg-ngen-lime text-ngen-charcoal'
-                        : 'bg-white/10 text-ngen-cream/70 hover:text-white'
-                    }`}
-                  >
-                    Room Visualizer
-                  </button>
+                {/* Mode pills */}
+                <div className="flex items-center gap-1 bg-white/[0.05] border border-white/[0.07] rounded-full p-0.5">
+                  {(['studio', 'room'] as const).map((mode) => (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => {
+                        if (mode === 'studio') setVisualizerMode('studio');
+                        else if (roomImageElement) setVisualizerMode('room');
+                        else handleLoadSamplePreset(SAMPLE_ROOM_PRESETS[0].id);
+                      }}
+                      className={`px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider transition-colors cursor-pointer ${
+                        visualizerMode === mode
+                          ? 'bg-ngen-lime text-ngen-charcoal'
+                          : 'text-ngen-cream/45 hover:text-ngen-cream/80'
+                      }`}
+                    >
+                      {mode === 'studio' ? 'Cutout' : 'Room'}
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              {/* Hidden File Input */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={handleFileChange}
-                className="hidden"
-                aria-label="Upload room photograph"
-              />
+              <div className="p-4 space-y-3">
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  aria-label="Upload room photograph"
+                />
 
-              {/* Drag and Drop / Upload Trigger Zone */}
-              <div
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  setIsDraggingFile(true);
-                }}
-                onDragLeave={() => setIsDraggingFile(false)}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  setIsDraggingFile(false);
-                  const file = e.dataTransfer.files?.[0];
-                  if (file) processUploadedFile(file);
-                }}
-                className={`rounded-xl border border-dashed p-3.5 transition-all flex flex-col sm:flex-row items-center justify-between gap-3 ${
-                  isDraggingFile
-                    ? 'border-ngen-lime bg-ngen-lime/10'
-                    : 'border-white/20 bg-black/25 hover:border-white/35'
-                }`}
-              >
-                <div className="flex items-center gap-3 text-left">
-                  <div className="w-10 h-10 rounded-xl bg-ngen-lime/15 border border-ngen-lime/30 flex items-center justify-center shrink-0">
-                    <Upload className="w-4 h-4 text-ngen-lime" />
+                {/* Drop zone */}
+                <motion.div
+                  onDragOver={(e) => { e.preventDefault(); setIsDraggingFile(true); }}
+                  onDragLeave={() => setIsDraggingFile(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDraggingFile(false);
+                    const f = e.dataTransfer.files?.[0];
+                    if (f) processUploadedFile(f);
+                  }}
+                  animate={{
+                    borderColor: isDraggingFile ? 'rgba(204,229,97,0.6)' : 'rgba(255,255,255,0.1)',
+                    backgroundColor: isDraggingFile ? 'rgba(204,229,97,0.05)' : 'rgba(0,0,0,0.15)',
+                  }}
+                  transition={{ duration: 0.18 }}
+                  className="rounded-xl border border-dashed p-4 flex flex-col sm:flex-row items-center justify-between gap-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-ngen-lime/10 border border-ngen-lime/20 flex items-center justify-center shrink-0">
+                      <Upload className="w-4 h-4 text-ngen-lime" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-white">
+                        {roomSourceLabel ? `Active: ${roomSourceLabel}` : 'Drop or upload your room photo'}
+                      </p>
+                      <p className="text-[10px] text-ngen-cream/40 font-mono mt-0.5">
+                        JPG, PNG, WebP · up to 10 MB · processed in-browser
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs font-bold text-white">
-                      {roomSourceLabel
-                        ? `Active Space: ${roomSourceLabel}`
-                        : 'Upload Your Living Room, Balcony, or Study Photo'}
-                    </p>
-                    <p className="text-[11px] text-ngen-cream/60 font-mono">
-                      Supports JPG, PNG, WebP up to 10 MB • Processed privately in-browser
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="px-3.5 py-2 rounded-full bg-ngen-peach hover:bg-ngen-peachHover text-ngen-charcoal font-display font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shrink-0"
-                  >
-                    {roomImageElement && !activePresetId ? 'Replace Photo' : 'Upload Photo'}
-                  </button>
-                  {roomImageElement && (
+                  <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
                     <button
                       type="button"
-                      onClick={handleRemoveRoomPhoto}
-                      title="Remove Room Photograph"
-                      className="p-2 rounded-full bg-white/10 hover:bg-red-500/20 text-ngen-cream/80 hover:text-red-300 border border-white/10 transition-colors cursor-pointer"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-4 py-2 rounded-full bg-ngen-peach hover:bg-ngen-peachHover text-ngen-charcoal font-display font-bold text-[11px] uppercase tracking-wider transition-all active:scale-[0.97] cursor-pointer shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      {roomImageElement && !activePresetId ? 'Replace' : 'Upload'}
                     </button>
+                    {roomImageElement && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveRoomPhoto}
+                        title="Remove room photo"
+                        className="p-2 rounded-full bg-white/[0.06] hover:bg-red-500/20 text-ngen-cream/50 hover:text-red-300 border border-white/[0.08] transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </motion.div>
+
+                {/* Sample presets */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="flex items-center gap-1.5 text-[10px] font-mono text-ngen-cream/35">
+                    <ImageIcon className="w-3 h-3 text-ngen-lime/50" />
+                    Sample rooms:
+                  </span>
+                  {SAMPLE_ROOM_PRESETS.map((preset) => (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      onClick={() => handleLoadSamplePreset(preset.id)}
+                      className={`px-2.5 py-1 rounded-lg text-[10px] font-mono border transition-colors cursor-pointer ${
+                        visualizerMode === 'room' && activePresetId === preset.id
+                          ? 'border-ngen-lime/45 bg-ngen-lime/12 text-white font-bold'
+                          : 'border-white/[0.08] bg-white/[0.03] text-ngen-cream/45 hover:bg-white/[0.08] hover:text-white'
+                      }`}
+                    >
+                      {preset.name}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Upload error */}
+                <AnimatePresence>
+                  {uploadError && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="flex items-start gap-2 text-[10px] text-red-300 bg-red-950/35 border border-red-400/20 rounded-xl px-3 py-2.5 font-mono leading-relaxed"
+                    >
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-px" />
+                      <span>{uploadError}</span>
+                    </motion.div>
                   )}
-                </div>
-              </div>
-
-              {/* Sample Room Quick Presets */}
-              <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono">
-                <span className="text-ngen-cream/60 flex items-center gap-1">
-                  <ImageIcon className="w-3.5 h-3.5 text-ngen-lime" />
-                  Or test sample rooms:
-                </span>
-                {SAMPLE_ROOM_PRESETS.map((preset) => (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    onClick={() => handleLoadSamplePreset(preset.id)}
-                    className={`px-2.5 py-1 rounded-lg border transition-colors cursor-pointer ${
-                      visualizerMode === 'room' && activePresetId === preset.id
-                        ? 'border-ngen-lime bg-ngen-lime/20 text-white font-bold'
-                        : 'border-white/15 bg-white/5 text-ngen-cream/75 hover:bg-white/10 hover:text-white'
-                    }`}
-                  >
-                    {preset.name}
-                  </button>
-                ))}
-              </div>
-
-              {uploadError && (
-                <div className="flex items-center gap-2 text-xs text-red-300 bg-red-950/40 border border-red-400/30 rounded-xl px-3 py-2 font-mono">
-                  <AlertCircle className="w-4 h-4 shrink-0 text-red-300" />
-                  <span>{uploadError}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Botanical Care Specs for this Pair */}
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs text-ngen-cream/70 font-mono">
-              <div className="flex items-center gap-2">
-                <SunMedium className="w-4 h-4 text-ngen-lime" />
-                <span>
-                  Light: <strong className="text-white">{selectedPlant.light}</strong>
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Droplets className="w-4 h-4 text-sky-400" />
-                <span>
-                  Water: <strong className="text-white">{selectedPlant.water}</strong>
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Layers className="w-4 h-4 text-ngen-peach" />
-                <span>
-                  Material: <strong className="text-white">{selectedPot.material}</strong>
-                </span>
+                </AnimatePresence>
               </div>
             </div>
-          </div>
 
-          {/* Right Column: Interactive Room Canvas, Transform Controls, AI Preview & Bundle Checkout (5 Cols) */}
-          <div className="lg:col-span-5 flex flex-col">
-            <div className="bg-ngen-darkgreen rounded-3xl p-6 sm:p-7 flex-1 flex flex-col justify-between border border-white/15 text-white">
-              <div>
-                {/* Stage Header */}
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                  <span className="text-xs uppercase font-mono font-bold tracking-widest text-ngen-cream/70 flex items-center gap-1.5">
-                    <Move className="w-3.5 h-3.5 text-ngen-lime" />
-                    {visualizerMode === 'room'
-                      ? 'Interactive Room Compositor'
-                      : 'Studio Cutout Preview'}
-                  </span>
-                  <span className="px-3 py-1 rounded-full bg-ngen-lime text-ngen-charcoal font-mono font-black text-xs uppercase tracking-wider">
-                    10% Combo Applied
-                  </span>
+            {/* ── Botanical care specs ── */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={selectedPlant.id + selectedPot.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={springCfg}
+                className="flex flex-wrap items-center gap-x-7 gap-y-3 px-5 py-4 rounded-[1.5rem] bg-ngen-darkgreen border border-white/[0.07] text-[11px] font-mono text-ngen-cream/50"
+              >
+                <div className="flex items-center gap-2">
+                  <SunMedium className="w-3.5 h-3.5 text-ngen-lime shrink-0" />
+                  <span>Light: <strong className="text-white font-bold">{selectedPlant.light}</strong></span>
                 </div>
+                <div className="flex items-center gap-2">
+                  <Droplets className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                  <span>Water: <strong className="text-white font-bold">{selectedPlant.water}</strong></span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Layers className="w-3.5 h-3.5 text-ngen-peach shrink-0" />
+                  <span>Planter: <strong className="text-white font-bold">{selectedPot.material}</strong></span>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
 
-                {/* Interactive HTML5 Canvas / AI Preview Stage */}
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#EDE1D1] border border-white/15 mb-3 select-none shadow-inner">
-                  <canvas
-                    ref={canvasRef}
-                    width={960}
-                    height={720}
-                    onPointerDown={handlePointerDown}
-                    onPointerMove={handlePointerMove}
-                    onPointerUp={handlePointerUp}
-                    onPointerCancel={handlePointerUp}
-                    aria-label={`Interactive preview of ${selectedPlant.name} in ${selectedPot.name}`}
-                    className={`w-full h-full block touch-none ${
-                      showAiPreview && aiPreviewDataUrl ? 'hidden' : 'cursor-grab active:cursor-grabbing'
-                    }`}
-                  />
+          {/* ────────────────────────────────
+              RIGHT column — canvas + checkout
+          ──────────────────────────────── */}
+          <motion.div variants={itemVariants} className="lg:col-span-5 flex flex-col gap-4">
 
-                  {/* AI Realistic Generated Preview Overlay */}
+            {/* ── Canvas panel ── */}
+            <div className="bg-ngen-darkgreen rounded-[1.75rem] border border-white/[0.07] overflow-hidden shadow-[0_20px_48px_-16px_rgba(0,0,0,0.3)]">
+              {/* Stage header */}
+              <div className="px-5 pt-5 pb-3.5 flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.06]">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-ngen-cream/45 flex items-center gap-1.5">
+                  <Move className="w-3 h-3 text-ngen-lime" />
+                  {visualizerMode === 'room' ? 'Room Compositor' : 'Studio Preview'}
+                </span>
+                {/* Breathing combo badge */}
+                <motion.span
+                  className="px-3 py-1 rounded-full bg-ngen-lime text-ngen-charcoal font-mono font-black text-[10px] uppercase tracking-wider"
+                  animate={{ opacity: [1, 0.8, 1] }}
+                  transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  10% Combo
+                </motion.span>
+              </div>
+
+              {/* Canvas viewport */}
+              <div className="relative aspect-[4/3] bg-[#EDE1D1] select-none border-b border-white/[0.06]">
+                <canvas
+                  ref={canvasRef}
+                  width={960}
+                  height={720}
+                  onPointerDown={handlePointerDown}
+                  onPointerMove={handlePointerMove}
+                  onPointerUp={handlePointerUp}
+                  onPointerCancel={handlePointerUp}
+                  aria-label={`Interactive preview: ${selectedPlant.name} in ${selectedPot.name}`}
+                  className={`w-full h-full block touch-none ${
+                    showAiPreview && aiPreviewDataUrl ? 'hidden' : 'cursor-grab active:cursor-grabbing'
+                  }`}
+                />
+
+                {/* AI render overlay */}
+                <AnimatePresence>
                   {showAiPreview && aiPreviewDataUrl && (
-                    <img
+                    <motion.img
+                      key="ai-img"
                       src={aiPreviewDataUrl}
-                      alt={`AI realistic room visualization of ${selectedPlant.name} in ${selectedPot.name}`}
-                      className="w-full h-full object-cover block"
+                      alt={`AI realistic preview: ${selectedPlant.name} in ${selectedPot.name}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
                   )}
+                </AnimatePresence>
 
-                  {/* Top-Left Mode Badge Overlay */}
-                  <div className="absolute top-3 left-3 flex items-center gap-1.5 pointer-events-none">
-                    <span className="px-2.5 py-1 rounded-full bg-ngen-charcoal/80 backdrop-blur-md text-ngen-cream text-[10px] font-mono uppercase tracking-wider border border-white/15">
-                      {showAiPreview && aiPreviewDataUrl
-                        ? 'AI Realistic Render'
-                        : visualizerMode === 'room'
-                        ? 'Drag, Scale & Rotate on Photo'
-                        : 'Transparent Cutout Layer'}
-                    </span>
-                  </div>
-
-                  {/* Compare Manual vs AI Toggle Button (when AI image exists) */}
-                  {aiPreviewDataUrl && (
-                    <button
-                      type="button"
-                      onClick={() => setShowAiPreview((prev) => !prev)}
-                      className="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-ngen-charcoal/85 hover:bg-ngen-charcoal text-ngen-lime text-[10px] font-mono font-bold uppercase tracking-wider border border-ngen-lime/40 flex items-center gap-1.5 cursor-pointer transition-all"
-                    >
-                      <Eye className="w-3 h-3" />
-                      <span>{showAiPreview ? 'Edit Manual Canvas' : 'View AI Render'}</span>
-                    </button>
-                  )}
-
-                  {/* AI Loading Overlay */}
-                  {isGeneratingAi && (
-                    <div className="absolute inset-0 bg-ngen-charcoal/75 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center z-20">
-                      <RefreshCw className="w-8 h-8 text-ngen-lime animate-spin mb-3" />
-                      <p className="font-display font-bold text-sm text-white mb-1">
-                        Generating Realistic Room Preview...
-                      </p>
-                      <p className="text-[11px] font-mono text-ngen-cream/75 max-w-xs">
-                        Matching your room lighting, perspective, and floor shadows for {selectedPlant.name} in {selectedPot.name}.
-                      </p>
-                    </div>
-                  )}
+                {/* Mode badge — liquid glass */}
+                <div className="absolute top-3 left-3 pointer-events-none">
+                  <span className="px-2.5 py-1 rounded-full bg-ngen-charcoal/70 backdrop-blur-md text-ngen-cream/90 text-[10px] font-mono uppercase tracking-wider border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]">
+                    {showAiPreview && aiPreviewDataUrl
+                      ? 'AI Render'
+                      : visualizerMode === 'room'
+                      ? 'Drag · Scale · Rotate'
+                      : 'Transparent Layer'}
+                  </span>
                 </div>
 
-                {/* Manual Placement Editor Toolbar (Scale, Rotation, Flip, Reset, Download) */}
-                <div className="p-3 rounded-2xl bg-white/5 border border-white/10 mb-3 space-y-2.5">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] font-mono">
-                    {/* Scale Slider */}
-                    <label className="flex flex-col gap-1">
-                      <div className="flex justify-between text-ngen-cream/75">
-                        <span className="flex items-center gap-1">
-                          <ZoomIn className="w-3 h-3 text-ngen-lime" /> Scale
-                        </span>
-                        <span className="text-white font-bold">{Math.round(transform.scale * 100)}%</span>
+                {/* Toggle AI / Canvas */}
+                {aiPreviewDataUrl && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAiPreview((v) => !v)}
+                    className="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-ngen-charcoal/75 hover:bg-ngen-charcoal backdrop-blur-md text-ngen-lime text-[10px] font-mono font-bold uppercase tracking-wider border border-ngen-lime/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex items-center gap-1.5 cursor-pointer transition-all"
+                  >
+                    <Eye className="w-3 h-3" />
+                    {showAiPreview ? 'Edit Canvas' : 'AI View'}
+                  </button>
+                )}
+
+                {/* AI generating overlay */}
+                <AnimatePresence>
+                  {isGeneratingAi && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 bg-ngen-charcoal/82 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center z-20"
+                    >
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1.1, repeat: Infinity, ease: 'linear' }}
+                        className="mb-4"
+                      >
+                        <RefreshCw className="w-6 h-6 text-ngen-lime" />
+                      </motion.div>
+                      <p className="font-display font-bold text-sm text-white mb-1.5">
+                        Rendering realistic preview…
+                      </p>
+                      <p className="text-[10px] font-mono text-ngen-cream/55 max-w-[26ch] leading-relaxed">
+                        Matching room lighting, perspective & floor shadows.
+                      </p>
+                      <div className="mt-5 w-40 space-y-2">
+                        <ShimmerBar className="h-1.5 w-full" />
+                        <ShimmerBar className="h-1.5 w-3/4" />
+                        <ShimmerBar className="h-1.5 w-5/6" />
                       </div>
-                      <input
-                        type="range"
-                        min="0.45"
-                        max="1.75"
-                        step="0.05"
-                        value={transform.scale}
-                        onChange={(e) => {
-                          setShowAiPreview(false);
-                          setTransform((prev) => ({ ...prev, scale: parseFloat(e.target.value) }));
-                        }}
-                        aria-label="Plant and pot scale"
-                        className="w-full accent-[#CCE561] cursor-pointer h-1.5 bg-white/15 rounded-lg"
-                      />
-                    </label>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
-                    {/* Rotation Slider */}
-                    <label className="flex flex-col gap-1">
-                      <div className="flex justify-between text-ngen-cream/75">
-                        <span className="flex items-center gap-1">
-                          <RotateCcw className="w-3 h-3 text-ngen-peach" /> Tilt / Rotate
-                        </span>
-                        <span className="text-white font-bold">{transform.rotation}°</span>
-                      </div>
-                      <input
-                        type="range"
-                        min="-45"
-                        max="45"
-                        step="1"
-                        value={transform.rotation}
-                        onChange={(e) => {
-                          setShowAiPreview(false);
-                          setTransform((prev) => ({ ...prev, rotation: parseInt(e.target.value, 10) }));
-                        }}
-                        aria-label="Plant and pot rotation"
-                        className="w-full accent-[#FF9C94] cursor-pointer h-1.5 bg-white/15 rounded-lg"
-                      />
-                    </label>
-                  </div>
-
-                  {/* Quick Actions Row: Flip, Reset, Download PNG, Generate AI Preview */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-white/10">
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setShowAiPreview(false);
-                          setTransform((prev) => ({ ...prev, flipX: !prev.flipX }));
-                        }}
-                        className="px-2.5 py-1.5 rounded-lg bg-white/8 hover:bg-white/15 text-ngen-cream text-[11px] font-mono flex items-center gap-1 transition-colors cursor-pointer"
-                        title="Mirror Foliage Horizontally"
-                      >
-                        <FlipHorizontal className="w-3 h-3 text-ngen-lime" />
-                        <span>Flip</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={handleResetPlacement}
-                        className="px-2.5 py-1.5 rounded-lg bg-white/8 hover:bg-white/15 text-ngen-cream text-[11px] font-mono flex items-center gap-1 transition-colors cursor-pointer"
-                        title="Reset Position, Scale & Rotation"
-                      >
-                        <RotateCcw className="w-3 h-3 text-ngen-peach" />
-                        <span>Reset</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={handleDownloadComposition}
-                        className="px-2.5 py-1.5 rounded-lg bg-white/12 hover:bg-white/20 text-white font-bold text-[11px] font-mono flex items-center gap-1 transition-colors cursor-pointer"
-                        title="Download High-Res PNG Composition"
-                      >
-                        <Download className="w-3 h-3 text-ngen-lime" />
-                        <span>Download PNG</span>
-                      </button>
+              {/* Toolbar */}
+              <div className="p-4 space-y-3.5">
+                {/* Sliders */}
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="flex flex-col gap-1.5">
+                    <div className="flex justify-between text-[10px] font-mono text-ngen-cream/45">
+                      <span className="flex items-center gap-1">
+                        <ZoomIn className="w-3 h-3 text-ngen-lime" />
+                        Scale
+                      </span>
+                      <span className="text-white font-bold">{Math.round(transform.scale * 100)}%</span>
                     </div>
+                    <input
+                      type="range"
+                      min="0.45"
+                      max="1.75"
+                      step="0.05"
+                      value={transform.scale}
+                      onChange={(e) => {
+                        setShowAiPreview(false);
+                        setTransform((prev) => ({ ...prev, scale: parseFloat(e.target.value) }));
+                      }}
+                      aria-label="Plant and pot scale"
+                      className="w-full accent-[#CCE561] cursor-pointer h-1 bg-white/10 rounded-full"
+                    />
+                  </label>
 
-                    {/* Optional AI Realistic Preview Trigger */}
+                  <label className="flex flex-col gap-1.5">
+                    <div className="flex justify-between text-[10px] font-mono text-ngen-cream/45">
+                      <span className="flex items-center gap-1">
+                        <RotateCcw className="w-3 h-3 text-ngen-peach" />
+                        Tilt
+                      </span>
+                      <span className="text-white font-bold">{transform.rotation}°</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="-45"
+                      max="45"
+                      step="1"
+                      value={transform.rotation}
+                      onChange={(e) => {
+                        setShowAiPreview(false);
+                        setTransform((prev) => ({ ...prev, rotation: parseInt(e.target.value, 10) }));
+                      }}
+                      aria-label="Plant and pot rotation"
+                      className="w-full accent-[#FF9C94] cursor-pointer h-1 bg-white/10 rounded-full"
+                    />
+                  </label>
+                </div>
+
+                {/* Action row */}
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-white/[0.06]">
+                  <div className="flex items-center gap-1.5">
                     <button
                       type="button"
-                      onClick={handleGenerateAiPreview}
-                      disabled={isGeneratingAi}
-                      className="px-3 py-1.5 rounded-lg bg-ngen-lime/20 hover:bg-ngen-lime/30 border border-ngen-lime/50 text-ngen-lime font-mono font-bold text-[11px] uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                      onClick={() => { setShowAiPreview(false); setTransform((prev) => ({ ...prev, flipX: !prev.flipX })); }}
+                      title="Mirror horizontally"
+                      className="px-2.5 py-1.5 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/[0.06] text-ngen-cream text-[10px] font-mono flex items-center gap-1.5 transition-colors cursor-pointer active:scale-[0.97]"
                     >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>
-                        {isGeneratingAi ? 'Rendering...' : 'Generate Realistic Preview'}
-                      </span>
+                      <FlipHorizontal className="w-3 h-3 text-ngen-lime" />
+                      Flip
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleResetPlacement}
+                      title="Reset placement"
+                      className="px-2.5 py-1.5 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/[0.06] text-ngen-cream text-[10px] font-mono flex items-center gap-1.5 transition-colors cursor-pointer active:scale-[0.97]"
+                    >
+                      <RotateCcw className="w-3 h-3 text-ngen-peach" />
+                      Reset
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDownloadComposition}
+                      title="Download PNG"
+                      className="px-2.5 py-1.5 rounded-lg bg-white/[0.07] hover:bg-white/[0.13] border border-white/[0.08] text-white text-[10px] font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer active:scale-[0.97]"
+                    >
+                      <Download className="w-3 h-3 text-ngen-lime" />
+                      PNG
                     </button>
                   </div>
 
-                  {/* AI Status / Fallback Banner */}
+                  <motion.button
+                    type="button"
+                    onClick={handleGenerateAiPreview}
+                    disabled={isGeneratingAi}
+                    whileTap={{ scale: 0.96 }}
+                    className="px-3 py-1.5 rounded-lg bg-ngen-lime/[0.12] hover:bg-ngen-lime/[0.22] border border-ngen-lime/25 text-ngen-lime font-mono font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-40"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    {isGeneratingAi ? 'Rendering…' : 'AI Render'}
+                  </motion.button>
+                </div>
+
+                {/* AI status banner */}
+                <AnimatePresence>
                   {aiStatusMessage && (
-                    <div
-                      className={`text-[11px] font-mono rounded-xl px-3 py-2 border leading-relaxed ${
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className={`text-[10px] font-mono rounded-xl px-3 py-2.5 border leading-relaxed ${
                         aiStatusMessage.type === 'success'
-                          ? 'bg-ngen-lime/15 border-ngen-lime/40 text-ngen-lime'
+                          ? 'bg-ngen-lime/[0.08] border-ngen-lime/25 text-ngen-lime'
                           : aiStatusMessage.type === 'warning'
-                          ? 'bg-amber-500/10 border-amber-300/30 text-amber-200'
-                          : 'bg-white/5 border-white/15 text-ngen-cream/80'
+                          ? 'bg-amber-500/[0.07] border-amber-300/20 text-amber-200'
+                          : 'bg-white/[0.04] border-white/[0.08] text-ngen-cream/65'
                       }`}
                     >
                       {aiStatusMessage.text}
-                    </div>
+                    </motion.div>
                   )}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* ── Bundle summary + checkout ── */}
+            <div className="bg-ngen-darkgreen rounded-[1.75rem] border border-white/[0.07] overflow-hidden shadow-[0_20px_48px_-16px_rgba(0,0,0,0.3)]">
+              {/* Pair description */}
+              <div className="px-5 pt-5 pb-4 border-b border-white/[0.06]">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={selectedPlant.id + selectedPot.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={springCfg}
+                  >
+                    <h3 className="font-display font-bold text-[1.1rem] tracking-tight text-white leading-snug">
+                      {selectedPlant.name}
+                    </h3>
+                    <p className="text-[10px] font-mono text-ngen-cream/35 mt-0.5 uppercase tracking-wider">
+                      in {selectedPot.name} · {selectedPot.colorName}
+                    </p>
+                    <p className="text-xs text-ngen-cream/50 mt-2.5 leading-relaxed font-sans max-w-[38ch]">
+                      {selectedPlant.vibe}. Delivered potted in {selectedPot.material.toLowerCase()}.
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Pricing breakdown */}
+              <div className="px-5 py-4 space-y-2 text-[11px] font-mono border-b border-white/[0.06]">
+                <div className="flex justify-between text-ngen-cream/45">
+                  <span>{selectedPlant.name}</span>
+                  <span>₹{selectedPlant.price.toLocaleString('en-IN')}</span>
                 </div>
-
-                {/* Bundle Summary */}
-                <h3 className="font-display font-bold text-xl tracking-tight text-white mb-1">
-                  {selectedPlant.name} in {selectedPot.name}
-                </h3>
-                <p className="text-xs text-ngen-cream/70 mb-3 leading-relaxed font-sans">
-                  {selectedPlant.vibe} nestled in {selectedPot.material.toLowerCase()}. Delivered potted and ready to display.
-                </p>
-
-                {/* Pricing Breakdown */}
-                <div className="space-y-1.5 py-3 border-y border-white/15 text-xs font-mono">
-                  <div className="flex justify-between text-ngen-cream/70">
-                    <span>{selectedPlant.name}</span>
-                    <span>₹{selectedPlant.price}</span>
-                  </div>
-                  <div className="flex justify-between text-ngen-cream/70">
-                    <span>{selectedPot.name}</span>
-                    <span>₹{selectedPot.price}</span>
-                  </div>
-                  <div className="flex justify-between text-ngen-lime font-bold">
-                    <span>Studio Combo Discount (10%)</span>
-                    <span>-₹{comboDiscount}</span>
-                  </div>
+                <div className="flex justify-between text-ngen-cream/45">
+                  <span>{selectedPot.name}</span>
+                  <span>₹{selectedPot.price.toLocaleString('en-IN')}</span>
+                </div>
+                <div className="flex justify-between text-ngen-lime font-bold">
+                  <span>Studio Combo (–10%)</span>
+                  <span>–₹{comboDiscount.toLocaleString('en-IN')}</span>
                 </div>
               </div>
 
-              {/* Total & Checkout Actions */}
-              <div className="pt-4">
-                <div className="flex items-baseline justify-between mb-3">
+              {/* Total + CTA */}
+              <div className="px-5 py-5">
+                <div className="flex items-baseline justify-between mb-5">
                   <div>
-                    <span className="text-xs text-ngen-cream/60 block font-mono uppercase tracking-wider">
-                      Total Bundle Price
+                    <span className="text-[10px] text-ngen-cream/35 block font-mono uppercase tracking-[0.15em] mb-1">
+                      Bundle total
                     </span>
-                    <span className="font-display font-black text-3xl text-white">
-                      ₹{finalComboPrice}
-                    </span>
+                    <AnimatePresence mode="wait">
+                      <motion.span
+                        key={finalComboPrice}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={springCfg}
+                        className="font-display font-black text-3xl text-white tracking-tight block"
+                      >
+                        ₹{finalComboPrice.toLocaleString('en-IN')}
+                      </motion.span>
+                    </AnimatePresence>
                   </div>
-                  <span className="text-sm font-mono text-ngen-cream/40 line-through">
-                    ₹{rawTotal}
+                  <span className="text-sm font-mono text-ngen-cream/25 line-through">
+                    ₹{rawTotal.toLocaleString('en-IN')}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-                  <button
+                <div className="grid grid-cols-12 gap-2.5">
+                  {/* Add to cart */}
+                  <motion.button
                     type="button"
                     onClick={handleAddComboToCart}
-                    className={`sm:col-span-8 py-3.5 px-4 rounded-full font-display font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 border cursor-pointer ${
+                    whileTap={{ scale: 0.98 }}
+                    className={`col-span-8 py-3.5 px-4 rounded-full font-display font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-2 transition-colors duration-200 border cursor-pointer ${
                       justAdded
-                        ? 'bg-emerald-500 text-white border-emerald-500'
-                        : 'bg-ngen-peach hover:bg-ngen-peachHover text-ngen-charcoal border-ngen-peach'
+                        ? 'bg-emerald-500 text-white border-emerald-500 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]'
+                        : 'bg-ngen-peach hover:bg-ngen-peachHover text-ngen-charcoal border-ngen-peach shadow-[inset_0_1px_0_rgba(255,255,255,0.22)]'
                     }`}
                   >
-                    {justAdded ? (
-                      <>
-                        <Check className="w-4 h-4" />
-                        <span>Custom Pair Added to Bag!</span>
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingBag className="w-4 h-4" />
-                        <span>Add Custom Pair to Bag</span>
-                      </>
-                    )}
-                  </button>
+                    <AnimatePresence mode="wait">
+                      {justAdded ? (
+                        <motion.span
+                          key="added"
+                          initial={{ opacity: 0, scale: 0.85 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.85 }}
+                          transition={springCfg}
+                          className="flex items-center gap-2"
+                        >
+                          <Check className="w-4 h-4" />
+                          Added to Bag
+                        </motion.span>
+                      ) : (
+                        <motion.span
+                          key="add"
+                          initial={{ opacity: 0, scale: 0.85 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.85 }}
+                          transition={springCfg}
+                          className="flex items-center gap-2"
+                        >
+                          <ShoppingBag className="w-4 h-4" />
+                          Add Pair to Bag
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </motion.button>
 
-                  <button
+                  {/* WhatsApp */}
+                  <motion.button
                     type="button"
                     onClick={handleWhatsAppComboOrder}
-                    className="sm:col-span-4 py-3.5 px-3 rounded-full font-display font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 bg-white/10 hover:bg-white/15 text-white border border-white/20 transition-all cursor-pointer"
-                    title="Order this custom pair directly on WhatsApp"
+                    whileTap={{ scale: 0.97 }}
+                    title="Order via WhatsApp"
+                    className="col-span-4 py-3.5 px-2 rounded-full font-display font-bold text-[11px] uppercase tracking-wider flex items-center justify-center gap-1.5 bg-white/[0.06] hover:bg-white/[0.11] text-white border border-white/[0.12] transition-colors cursor-pointer shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
                   >
-                    <MessageCircle className="w-4 h-4 text-ngen-lime" />
+                    <MessageCircle className="w-3.5 h-3.5 text-ngen-lime shrink-0" />
                     <span>WhatsApp</span>
-                  </button>
+                  </motion.button>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
