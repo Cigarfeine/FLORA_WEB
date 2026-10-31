@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://flora-pots-and-plants.vercel.app/sitemap.xml
