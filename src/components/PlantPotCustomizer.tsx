@@ -11,15 +11,12 @@ import {
   Upload,
   RotateCcw,
   Download,
-  Sparkles,
   Move,
   ZoomIn,
-  RefreshCw,
   FlipHorizontal,
   Image as ImageIcon,
   Trash2,
   AlertCircle,
-  Eye,
   MessageCircle,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -234,17 +231,6 @@ const BreathingDot = React.memo(() => (
 ));
 BreathingDot.displayName = 'BreathingDot';
 
-const ShimmerBar = React.memo(({ className = '' }: { className?: string }) => (
-  <div className={`relative overflow-hidden rounded-md bg-white/10 ${className}`}>
-    <motion.div
-      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/12 to-transparent"
-      animate={{ x: ['-100%', '200%'] }}
-      transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-    />
-  </div>
-));
-ShimmerBar.displayName = 'ShimmerBar';
-
 // ─────────────────────────────────────────────
 // Main Component
 // ─────────────────────────────────────────────
@@ -257,7 +243,6 @@ export const PlantPotCustomizer: React.FC = () => {
 
   const [visualizerMode, setVisualizerMode] = useState<'studio' | 'room'>('studio');
   const [roomImageElement, setRoomImageElement] = useState<HTMLImageElement | null>(null);
-  const [roomPhotoDataUrl, setRoomPhotoDataUrl] = useState<string | null>(null);
   const [roomSourceLabel, setRoomSourceLabel] = useState<string>('');
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -268,14 +253,6 @@ export const PlantPotCustomizer: React.FC = () => {
 
   const [transform, setTransform] = useState<PlacementTransform>(DEFAULT_STUDIO_TRANSFORM);
   const [isCanvasSelected, setIsCanvasSelected] = useState<boolean>(true);
-
-  const [isGeneratingAi, setIsGeneratingAi] = useState<boolean>(false);
-  const [aiPreviewDataUrl, setAiPreviewDataUrl] = useState<string | null>(null);
-  const [showAiPreview, setShowAiPreview] = useState<boolean>(false);
-  const [aiStatusMessage, setAiStatusMessage] = useState<{
-    type: 'info' | 'warning' | 'success';
-    text: string;
-  } | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -323,10 +300,6 @@ export const PlantPotCustomizer: React.FC = () => {
     return () => { cancelled = true; };
   }, [selectedPot]);
 
-  useEffect(() => {
-    if (aiPreviewDataUrl) setShowAiPreview(false);
-  }, [selectedPlant.id, selectedPot.id]);
-
   // ── Canvas Redraw ─────────────────────────
   const redrawCanvas = useCallback(() => {
     const canvas = canvasRef.current;
@@ -352,14 +325,10 @@ export const PlantPotCustomizer: React.FC = () => {
       const img = new Image();
       img.onload = () => {
         setRoomImageElement(img);
-        setRoomPhotoDataUrl(dataUrl);
         setRoomSourceLabel(label);
         setActivePresetId(presetId);
         setVisualizerMode('room');
         setUploadError(null);
-        setAiPreviewDataUrl(null);
-        setShowAiPreview(false);
-        setAiStatusMessage(null);
         setIsCanvasSelected(true);
         setTransform(initialPlacement ?? { x: 0.52, y: 0.82, scale: 0.95, rotation: 0, flipX: false, shadowIntensity: 0.65 });
       };
@@ -432,10 +401,9 @@ export const PlantPotCustomizer: React.FC = () => {
   };
 
   const handleRemoveRoomPhoto = () => {
-    setRoomImageElement(null); setRoomPhotoDataUrl(null);
+    setRoomImageElement(null);
     setRoomSourceLabel(''); setActivePresetId(null);
-    setVisualizerMode('studio'); setAiPreviewDataUrl(null);
-    setShowAiPreview(false); setAiStatusMessage(null);
+    setVisualizerMode('studio');
     setTransform(DEFAULT_STUDIO_TRANSFORM);
   };
 
@@ -454,7 +422,6 @@ export const PlantPotCustomizer: React.FC = () => {
     const canvas = canvasRef.current;
     const bounds = lastBoundsRef.current;
     if (!canvas || !bounds) return;
-    if (showAiPreview) setShowAiPreview(false);
     const pt = getCanvasPoint(e);
 
     const distRotate = Math.hypot(pt.x - bounds.rotateHandleX, pt.y - bounds.rotateHandleY);
@@ -529,59 +496,13 @@ export const PlantPotCustomizer: React.FC = () => {
   );
 
   const handleDownloadComposition = () => {
-    const dataUrl = showAiPreview && aiPreviewDataUrl ? aiPreviewDataUrl : exportCleanCompositionDataUrl('image/png');
+    const dataUrl = exportCleanCompositionDataUrl('image/png');
     const link = document.createElement('a');
-    link.download = `flora-${selectedPlant.id}-${selectedPot.id}-${showAiPreview && aiPreviewDataUrl ? 'ai-preview' : 'room-composition'}.png`;
+    link.download = `flora-${selectedPlant.id}-${selectedPot.id}-room-composition.png`;
     link.href = dataUrl;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
-
-  // ── AI Preview ────────────────────────────
-  const handleGenerateAiPreview = async () => {
-    if (!roomPhotoDataUrl || !roomImageElement) {
-      const defaultPreset = SAMPLE_ROOM_PRESETS[0];
-      applyRoomDataUrl(generateSampleRoomDataUrl(defaultPreset.id), defaultPreset.name, defaultPreset.defaultPlacement, defaultPreset.id);
-      setAiStatusMessage({ type: 'info', text: 'Sample room loaded. Click "AI Render" again or upload your own room photo.' });
-      return;
-    }
-    setIsGeneratingAi(true);
-    setAiStatusMessage({ type: 'info', text: 'Synthesising room lighting, perspective & contact shadows...' });
-    try {
-      const compositeGuideDataUrl = exportCleanCompositionDataUrl('image/jpeg', 0.88);
-      const apiBase = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') || '';
-      const response = await fetch(`${apiBase}/api/visualize-room`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          roomImageDataUrl: roomPhotoDataUrl,
-          compositeGuideDataUrl,
-          plant: { id: selectedPlant.id, name: selectedPlant.name, scientificName: selectedPlant.scientificName, light: selectedPlant.light },
-          pot: { id: selectedPot.id, name: selectedPot.name, color: selectedPot.colorName, material: selectedPot.material },
-          placement: { x: transform.x, y: transform.y, scale: transform.scale, rotation: transform.rotation, flipX: transform.flipX },
-        }),
-      });
-      const contentType = response.headers.get('content-type') || '';
-      if (!contentType.includes('application/json')) {
-        setAiStatusMessage({ type: 'warning', text: 'AI backend not connected on this host. Set VITE_API_BASE_URL to your deployment. Canvas compositor and PNG export remain fully active.' });
-        setIsGeneratingAi(false);
-        return;
-      }
-      const data = (await response.json()) as { imageDataUrl?: string; error?: string };
-      if (!response.ok || !data.imageDataUrl) {
-        setAiStatusMessage({ type: 'warning', text: data.error || 'AI preview unavailable. Continue with manual canvas placement and download.' });
-        setIsGeneratingAi(false);
-        return;
-      }
-      setAiPreviewDataUrl(data.imageDataUrl);
-      setShowAiPreview(true);
-      setAiStatusMessage({ type: 'success', text: 'Realistic preview rendered. Toggle between AI view and canvas editor anytime.' });
-    } catch {
-      setAiStatusMessage({ type: 'warning', text: 'AI API unreachable. Manual canvas placement, scaling, rotation, and PNG export remain active.' });
-    } finally {
-      setIsGeneratingAi(false);
-    }
   };
 
   // ── Cart ──────────────────────────────────
@@ -1012,80 +933,17 @@ export const PlantPotCustomizer: React.FC = () => {
                   onPointerUp={handlePointerUp}
                   onPointerCancel={handlePointerUp}
                   aria-label={`Interactive preview: ${selectedPlant.name} in ${selectedPot.name}`}
-                  className={`w-full h-full block touch-none ${
-                    showAiPreview && aiPreviewDataUrl ? 'hidden' : 'cursor-grab active:cursor-grabbing'
-                  }`}
+                  className="w-full h-full block touch-none cursor-grab active:cursor-grabbing"
                 />
-
-                {/* AI render overlay */}
-                <AnimatePresence>
-                  {showAiPreview && aiPreviewDataUrl && (
-                    <motion.img
-                      key="ai-img"
-                      src={aiPreviewDataUrl}
-                      alt={`AI realistic preview: ${selectedPlant.name} in ${selectedPot.name}`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  )}
-                </AnimatePresence>
 
                 {/* Mode badge — liquid glass */}
                 <div className="absolute top-3 left-3 pointer-events-none">
                   <span className="px-2.5 py-1 rounded-full bg-ngen-charcoal/70 backdrop-blur-md text-ngen-cream/90 text-[10px] font-mono uppercase tracking-wider border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]">
-                    {showAiPreview && aiPreviewDataUrl
-                      ? 'AI Render'
-                      : visualizerMode === 'room'
+                    {visualizerMode === 'room'
                       ? 'Drag · Scale · Rotate'
-                      : 'Transparent Layer'}
+                      : 'Studio Preview'}
                   </span>
                 </div>
-
-                {/* Toggle AI / Canvas */}
-                {aiPreviewDataUrl && (
-                  <button
-                    type="button"
-                    onClick={() => setShowAiPreview((v) => !v)}
-                    className="absolute top-3 right-3 px-3 py-1.5 rounded-full bg-ngen-charcoal/75 hover:bg-ngen-charcoal backdrop-blur-md text-ngen-lime text-[10px] font-mono font-bold uppercase tracking-wider border border-ngen-lime/25 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex items-center gap-1.5 cursor-pointer transition-all"
-                  >
-                    <Eye className="w-3 h-3" />
-                    {showAiPreview ? 'Edit Canvas' : 'AI View'}
-                  </button>
-                )}
-
-                {/* AI generating overlay */}
-                <AnimatePresence>
-                  {isGeneratingAi && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute inset-0 bg-ngen-charcoal/82 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center z-20"
-                    >
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1.1, repeat: Infinity, ease: 'linear' }}
-                        className="mb-4"
-                      >
-                        <RefreshCw className="w-6 h-6 text-ngen-lime" />
-                      </motion.div>
-                      <p className="font-display font-bold text-sm text-white mb-1.5">
-                        Rendering realistic preview…
-                      </p>
-                      <p className="text-[10px] font-mono text-ngen-cream/55 max-w-[26ch] leading-relaxed">
-                        Matching room lighting, perspective & floor shadows.
-                      </p>
-                      <div className="mt-5 w-40 space-y-2">
-                        <ShimmerBar className="h-1.5 w-full" />
-                        <ShimmerBar className="h-1.5 w-3/4" />
-                        <ShimmerBar className="h-1.5 w-5/6" />
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </div>
 
               {/* Toolbar */}
@@ -1107,7 +965,6 @@ export const PlantPotCustomizer: React.FC = () => {
                       step="0.05"
                       value={transform.scale}
                       onChange={(e) => {
-                        setShowAiPreview(false);
                         setTransform((prev) => ({ ...prev, scale: parseFloat(e.target.value) }));
                       }}
                       aria-label="Plant and pot scale"
@@ -1130,7 +987,6 @@ export const PlantPotCustomizer: React.FC = () => {
                       step="1"
                       value={transform.rotation}
                       onChange={(e) => {
-                        setShowAiPreview(false);
                         setTransform((prev) => ({ ...prev, rotation: parseInt(e.target.value, 10) }));
                       }}
                       aria-label="Plant and pot rotation"
@@ -1144,7 +1000,7 @@ export const PlantPotCustomizer: React.FC = () => {
                   <div className="flex items-center gap-1.5">
                     <button
                       type="button"
-                      onClick={() => { setShowAiPreview(false); setTransform((prev) => ({ ...prev, flipX: !prev.flipX })); }}
+                      onClick={() => setTransform((prev) => ({ ...prev, flipX: !prev.flipX }))}
                       title="Mirror horizontally"
                       className="px-2.5 py-1.5 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/[0.06] text-ngen-cream text-[10px] font-mono flex items-center gap-1.5 transition-colors cursor-pointer active:scale-[0.97]"
                     >
@@ -1160,48 +1016,18 @@ export const PlantPotCustomizer: React.FC = () => {
                       <RotateCcw className="w-3 h-3 text-ngen-peach" />
                       Reset
                     </button>
-                    <button
-                      type="button"
-                      onClick={handleDownloadComposition}
-                      title="Download PNG"
-                      className="px-2.5 py-1.5 rounded-lg bg-white/[0.07] hover:bg-white/[0.13] border border-white/[0.08] text-white text-[10px] font-mono font-bold flex items-center gap-1.5 transition-colors cursor-pointer active:scale-[0.97]"
-                    >
-                      <Download className="w-3 h-3 text-ngen-lime" />
-                      PNG
-                    </button>
                   </div>
 
-                  <motion.button
+                  <button
                     type="button"
-                    onClick={handleGenerateAiPreview}
-                    disabled={isGeneratingAi}
-                    whileTap={{ scale: 0.96 }}
-                    className="px-3 py-1.5 rounded-lg bg-ngen-lime/[0.12] hover:bg-ngen-lime/[0.22] border border-ngen-lime/25 text-ngen-lime font-mono font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-40"
+                    onClick={handleDownloadComposition}
+                    title="Download high-resolution room composition PNG"
+                    className="px-3.5 py-1.5 rounded-lg bg-ngen-lime/[0.14] hover:bg-ngen-lime/[0.22] border border-ngen-lime/30 text-ngen-lime font-mono font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer active:scale-[0.97]"
                   >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    {isGeneratingAi ? 'Rendering…' : 'AI Render'}
-                  </motion.button>
+                    <Download className="w-3.5 h-3.5 text-ngen-lime" />
+                    Download PNG
+                  </button>
                 </div>
-
-                {/* AI status banner */}
-                <AnimatePresence>
-                  {aiStatusMessage && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className={`text-[10px] font-mono rounded-xl px-3 py-2.5 border leading-relaxed ${
-                        aiStatusMessage.type === 'success'
-                          ? 'bg-ngen-lime/[0.08] border-ngen-lime/25 text-ngen-lime'
-                          : aiStatusMessage.type === 'warning'
-                          ? 'bg-amber-500/[0.07] border-amber-300/20 text-amber-200'
-                          : 'bg-white/[0.04] border-white/[0.08] text-ngen-cream/65'
-                      }`}
-                    >
-                      {aiStatusMessage.text}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </div>
             </div>
 
