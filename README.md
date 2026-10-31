@@ -2,12 +2,15 @@
 
 > Living botanicals and handcrafted designer pots curated for mindful homes and architectural spaces in Nellikuzhi, Kerala.
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-cigarfeine.github.io%2FFLORA__WEB-success?style=flat&logo=github)](https://cigarfeine.github.io/FLORA_WEB/)
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](#)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.3-61dafb.svg)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38b2ac.svg)](https://tailwindcss.com/)
 [![GSAP](https://img.shields.io/badge/GSAP-3.15-88ce02.svg)](https://greensock.com/gsap/)
 [![Lenis](https://img.shields.io/badge/Lenis-1.3-black.svg)](https://github.com/darkroomengineering/lenis)
+
+🌐 **Live Experience:** [https://cigarfeine.github.io/FLORA_WEB/](https://cigarfeine.github.io/FLORA_WEB/)
 
 ---
 
